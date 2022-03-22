@@ -1,6 +1,6 @@
 # circle
 
-A new Flutter project.
+채점 도와주는 모바일앱
 
 ## Getting Started
 
