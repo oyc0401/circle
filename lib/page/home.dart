@@ -1,6 +1,7 @@
 import 'dart:math';
 
-import 'package:circle/KoreanNumber.dart';
+import 'package:circle/tools/KoreanNumber.dart';
+import 'package:circle/tools/Speaking.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -19,14 +20,17 @@ class _MyHomePageState extends State<MyHomePage> {
   FlutterTts flutterTts = FlutterTts();
   bool isSpeak = false;
   int position = 0;
-  double speechRate = 0.5;
-  double volume = 1;
-  double pitch = 0.9;
-  Map<String, String> voice = {
+
+  final String Title = '3학년 listning';
+  final double speechRate = 0.5;
+  final double volume = 1;
+  final double pitch = 0.9;
+  final Map<String, String> voice = {
     'name': 'ko-kr-x-kod-network',
     'locale': 'ko-KR'
   };
-  String text='3학년 listning';
+
+  Speaking tts=Speaking();
 
   @override
   void initState() {
@@ -59,48 +63,56 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future _speak(int where) async {
-    print('$where번 부터 말하기');
-    isSpeak = true;
+  void _speak(int number) async{
+    print('$number번 부터 말하기');
 
-    for (int i = where; i < _answers.length; i++) {
-      print("i: $i");
-      int number = i + 1;
-      setState(() {
-        position = number;
-      });
-      String koreanNum = KoreanNumber(number).getnumber();
-      String answer = _answers[i].toString();
-      await _talk("$koreanNum번", 300);
-      await _talk(answer, 500);
-
-      if (isSpeak == false) break;
+    if(isSpeak==true) {
+      _stop();
     }
+
+
+
+    isSpeak = true;
+    _talkNum(number);
   }
 
-  Future _talk(String text, int duration) async {
-    print('speak: $text');
-    await flutterTts.speak(text);
-    await _wait(duration);
-  }
+  Future _talkNum(int number) async{
+    setState(() {
+      position = number;
+    });
+    if(_answers.length<number){
+      return 0;
+    }
 
-  Future _wait(int duration) async {
-    bool isSpeaking = true;
-    flutterTts.setCompletionHandler(() {
-      print('Complete');
-      isSpeaking = false;
+    String koreanNum = KoreanNumber(number).getnumber();
+    await Future.delayed(Duration(milliseconds: 500));
+    if(isSpeak==true&&position==number) await flutterTts.speak("$koreanNum번");
+    flutterTts.setCompletionHandler(()async {
+      print('number Complete');
+
+      if(isSpeak==true&&position==number) _talkAnswer(number);
+
     });
 
-    /// 과부하 위험지역
-    while (isSpeaking == true) {
-      await Future.delayed(Duration(milliseconds: 16));
-      if (isSpeaking == false) break;
-    }
-    await Future.delayed(Duration(milliseconds: duration));
+
+
   }
 
-  Future _stop() async {
+  Future _talkAnswer(int number) async{
+    int whereArray=number-1;
+    String answer = _answers[whereArray].toString();
+    await Future.delayed(Duration(milliseconds: 300));
+    if(isSpeak==true&&position==number) await flutterTts.speak(answer);
+
+    flutterTts.setCompletionHandler(()async {
+      print('answer Complete');
+      if(isSpeak==true&&position==number) _talkNum(number+1);
+    });
+  }
+
+  void _stop() {
     flutterTts.stop();
+    isSpeak = false;
   }
 
   @override
@@ -113,16 +125,18 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomAppBar(child: navigationRow()),
       body: Column(
         children: [
-          Expanded(child: ListView(
+          Expanded(
+              child: ListView(
             children: [
-
-
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: Text(text,style: TextStyle(fontSize: 24,),),
+                child: Text(
+                  Title,
+                  style: TextStyle(
+                    fontSize: 24,
+                  ),
+                ),
               ),
-
-
               touchSection(_answers),
             ],
           )),
@@ -154,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             InkWell(
               onTap: () {
-                _speak(i);
+                _speak(number);
               },
               onLongPress: () {
                 print(answers[i].toString());
@@ -170,7 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Center(
                   child: Text(text,
                       style:
-                      const TextStyle(color: Colors.white, fontSize: 25.0)),
+                          const TextStyle(color: Colors.white, fontSize: 25.0)),
                 ),
               ),
             ),
@@ -192,7 +206,6 @@ class _MyHomePageState extends State<MyHomePage> {
       List<Widget> list = [];
 
       int ahrt = values.length ~/ 5;
-      print('몫: $ahrt');
       for (int i = 0; i < ahrt; i++) {
         list.add(Row(children: values.sublist(0, 5)));
 
@@ -200,7 +213,7 @@ class _MyHomePageState extends State<MyHomePage> {
           values.removeAt(0);
         }
       }
-      print((values.length));
+      //print((values.length));
       list.add(Row(children: values.sublist(0, values.length)));
 
       return list;
@@ -223,7 +236,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 splashColor: Colors.redAccent,
                 onPressed: () {
                   _stop();
-                  isSpeak = false;
                 }),
             const Text('STOP',
                 style: TextStyle(
@@ -234,7 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ]);
   }
 
-  List _answers = [
+  final List _answers = [
     1,
     2,
     3,

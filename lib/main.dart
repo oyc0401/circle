@@ -1,8 +1,9 @@
+import 'package:circle/page/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-import 'home.dart';
-import 'home2.dart';
+
+
 
 
 void main() {
