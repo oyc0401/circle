@@ -1,12 +1,6 @@
-import 'dart:math';
-
-import 'package:circle/tools/KoreanNumber.dart';
 import 'package:circle/tools/Speaking.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
-
-import 'home.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -50,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ListView(
             children: [
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                 child: Text(
                   Title,
                   style: TextStyle(
@@ -68,79 +62,101 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget touchSection(List answers) {
     print('touchSection');
-    Widget context = Container();
 
-    List<Widget> answerwidgets(List answersList) {
-      List<Widget> list = [];
+    List<Widget> singleWidgets(List Answers) {
+      List<Widget> widgets = [];
 
-      for (int i = 0; i < answersList.length; i++) {
+      for (int i = 0; i < Answers.length; i++) {
         String text = answers[i].toString();
         if (text.length > 1) {
-          //text = '서';
+          text = '서';
         }
         int number = i + 1;
 
-        Color thiscolor = Colors.deepPurpleAccent;
+        Color thiscolor = Colors.white;
         if (speaking.getPosition() == number) {
           thiscolor = Colors.redAccent;
         }
 
-        Widget circle = Column(
-          children: [
-            InkWell(
-              onTap: () {
-                speaking.speak(number, setstate);
-              },
-              onLongPress: () {
-                print(answers[i].toString());
-              },
-              child: Container(
-                width: 65,
-                height: 65,
-                margin: EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: thiscolor,
-                ),
-                child: Center(
-                  child: Text(text,
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 25.0)),
+        Widget circle = Container(
+          //color: Colors.black,
+          padding: EdgeInsets.fromLTRB(0, 15, 0, 10),
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  speaking.speak(number, setstate);
+                },
+                onLongPress: () {
+                  print(answers[i].toString());
+                },
+                child: Container(
+                  width: 65,
+                  height: 65,
+                  margin: EdgeInsets.fromLTRB(0, 0, 0, 6),
+                  decoration: BoxDecoration(
+                    color: thiscolor,
+                    shape: BoxShape.circle,
+                    border: Border.all(),
+                  ),
+                  child: Center(
+                    child: Text(text,
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.w500)),
+                  ),
                 ),
               ),
-            ),
-            Text('$number번',
-                style: const TextStyle(color: Colors.black, fontSize: 15.0)),
-            SizedBox(
-              height: 10,
-            )
-          ],
+              Text('$number번',
+                  style: const TextStyle(color: Colors.black, fontSize: 15.0)),
+            ],
+          ),
         );
 
-        list.add(circle);
+        widgets.add(circle);
       }
 
-      return list;
+      return widgets;
     }
 
     List<Widget> rows(List<Widget> values) {
       List<Widget> list = [];
 
-      int ahrt = values.length ~/ 5;
-      for (int i = 0; i < ahrt; i++) {
-        list.add(Row(children: values.sublist(0, 5)));
-
-        for (int k = 1; k <= 5; k++) {
-          values.removeAt(0);
-        }
+      while (values.length % 5 != 0) {
+        values.add(Container(
+          height: 80,
+          width: 65,
+          // color: Colors.black,
+        ));
       }
-      //print((values.length));
-      list.add(Row(children: values.sublist(0, values.length)));
+
+      int rowNum = values.length ~/ 5;
+      for (int i = 0; i < rowNum; i++) {
+        Widget column = Column(
+          children: [
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // 같은 간격만큼 공간을 둠
+                children: values.sublist(0, 5)),
+            Container(
+              height: 0.5,
+              color: Colors.black,
+            )
+          ],
+        );
+
+        list.add(column);
+        values.removeRange(0, 5);
+      }
 
       return list;
     }
 
-    context = Column(children: rows(answerwidgets(answers)));
+    Widget context = Container(
+      //color: Colors.green,
+        padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
+        child: Column(children: rows(singleWidgets(answers))));
 
     return context;
   }
@@ -173,6 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<List> getList() async {
     List list = _answers;
+    await Future.delayed(Duration(milliseconds: 50));
     return list;
   }
 
