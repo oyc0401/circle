@@ -17,20 +17,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  FlutterTts flutterTts = FlutterTts();
-  bool isSpeak = false;
-  int position = 0;
-
   final String Title = '3학년 listning';
-  final double speechRate = 0.5;
-  final double volume = 1;
-  final double pitch = 0.9;
-  final Map<String, String> voice = {
-    'name': 'ko-kr-x-kod-network',
-    'locale': 'ko-KR'
-  };
-
-  Speaking tts=Speaking();
+  Speaking speaking = Speaking();
 
   @override
   void initState() {
@@ -39,80 +27,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void init() {
-    flutterTts.setSpeechRate(speechRate);
-    flutterTts.setVolume(volume);
-    flutterTts.setPitch(pitch);
-    flutterTts.setVoice(voice);
-
-    // {name: ko-kr-x-ism-local, locale: ko-KR} 이상한 섞인 목소리
-    // {'name': 'ko-kr-x-ism-network', 'locale': 'ko-KR'} 피치 약간 높힌 여자 목소리     여자 목소리 채택
-    // {name: ko-kr-x-kob-network, locale: ko-KR} 느린 여자 목소리
-    // {'name': 'ko-kr-x-koc-network', 'locale': 'ko-KR'} 약간 낮은 남자 목소리
-    // {'name': 'ko-kr-x-kod-network', 'locale': 'ko-KR'} 좀 빠른 남자 목소리      현재 목소리
-    // {name: ko-KR-language, locale: ko-KR} 이상한 섞인 목소리
-    // {'name': 'ko-kr-x-kob-local', 'locale': 'ko-KR'} 피치 낮춘 여자목소리
-    // {'name': 'ko-kr-x-kod-local', 'locale': 'ko-KR'} 피치 더낮춘 여자 목소리
-    // {'name': 'ko-kr-x-koc-local', 'locale': 'ko-KR'} 낮은 남자 목소리
-    flutterTts.getVoices.then((value) {
-      //print(value);
-      List list = value;
-      list.forEach((element) {
-        print(element);
-      });
-      //flutterTts.setVoice({'locale': 'ko-KR', 'name': 'Yuna'});
+    getList().then((answers) {
+      return speaking.setAnswers(answers);
     });
-  }
-
-  void _speak(int number) async{
-    print('$number번 부터 말하기');
-
-    if(isSpeak==true) {
-      _stop();
-    }
-
-
-
-    isSpeak = true;
-    _talkNum(number);
-  }
-
-  Future _talkNum(int number) async{
-    setState(() {
-      position = number;
-    });
-    if(_answers.length<number){
-      return 0;
-    }
-
-    String koreanNum = KoreanNumber(number).getnumber();
-    await Future.delayed(Duration(milliseconds: 500));
-    if(isSpeak==true&&position==number) await flutterTts.speak("$koreanNum번");
-    flutterTts.setCompletionHandler(()async {
-      print('number Complete');
-
-      if(isSpeak==true&&position==number) _talkAnswer(number);
-
-    });
-
-
-
-  }
-
-  Future _talkAnswer(int number) async{
-    int whereArray=number-1;
-    String answer = _answers[whereArray].toString();
-    await Future.delayed(Duration(milliseconds: 300));
-    if(isSpeak==true&&position==number) await flutterTts.speak(answer);
-
-    flutterTts.setCompletionHandler(()async {
-      print('answer Complete');
-      if(isSpeak==true&&position==number) _talkNum(number+1);
-    });
-  }
-
-  void _stop() {
-    flutterTts.stop();
-    isSpeak = false;
+    speaking.setPitch(0.9);
+    speaking.setVolume(1);
+    speaking.setSpeechRate(0.5);
+    speaking.setVoice({'name': 'ko-kr-x-kod-network', 'locale': 'ko-KR'});
   }
 
   @override
@@ -137,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              touchSection(_answers),
+              touchSection(speaking.getAnswers()),
             ],
           )),
         ],
@@ -160,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
         int number = i + 1;
 
         Color thiscolor = Colors.deepPurpleAccent;
-        if (position == number) {
+        if (speaking.getPosition() == number) {
           thiscolor = Colors.redAccent;
         }
 
@@ -168,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             InkWell(
               onTap: () {
-                _speak(number);
+                speaking.speak(number, setstate);
               },
               onLongPress: () {
                 print(answers[i].toString());
@@ -235,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.red,
                 splashColor: Colors.redAccent,
                 onPressed: () {
-                  _stop();
+                  speaking.stop();
                 }),
             const Text('STOP',
                 style: TextStyle(
@@ -244,6 +165,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Colors.red))
           ]),
     ]);
+  }
+
+  setstate() {
+    setState(() {});
+  }
+
+  Future<List> getList() async {
+    List list = _answers;
+    return list;
   }
 
   final List _answers = [
