@@ -1,6 +1,9 @@
+import 'package:circle/DB/shared.dart';
 import 'package:circle/tools/Speaking.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'setting.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -20,14 +23,26 @@ class _MyHomePageState extends State<MyHomePage> {
     init();
   }
 
-  void init() {
+  void init() async {
+
+    // keyValue.setVolume(1);
+    // keyValue.setPitch(0.9);
+    // keyValue.setSpeechRate(0.5);
+    // keyValue.setVoice({'name': 'ko-kr-x-kod-network', 'locale': 'ko-KR'});
+
     getList().then((answers) {
-      return speaking.setAnswers(answers);
+      speaking.setAnswers(answers);
+      setState(() {});
     });
-    speaking.setPitch(0.9);
-    speaking.setVolume(1);
-    speaking.setSpeechRate(0.5);
-    speaking.setVoice({'name': 'ko-kr-x-kod-network', 'locale': 'ko-KR'});
+   await getDATA();
+
+  }
+  getDATA()async{
+    KeyValue keyValue = await KeyValue.Instance();
+    speaking.setVolume(keyValue.getVolume());
+    speaking.setPitch(keyValue.getPitch());
+    speaking.setSpeechRate(keyValue.getSpeechRate());
+    //speaking.setVoice(keyValue.getVoice());
   }
 
   @override
@@ -36,7 +51,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            onPressed: () {
+              speaking.stop();
+              Navigator.push(
+                  context, CupertinoPageRoute(builder: (context) =>  SettingPage()));
+            },
+            icon: const Icon(Icons.edit),
+          ),
+        ],
       ),
+
       bottomNavigationBar: BottomAppBar(child: navigationRow()),
       body: Column(
         children: [
@@ -85,6 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               InkWell(
                 onTap: () {
+                  getDATA();
                   speaking.speak(number, setstate);
                 },
                 onLongPress: () {
@@ -154,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     Widget context = Container(
-      //color: Colors.green,
+        //color: Colors.green,
         padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
         child: Column(children: rows(singleWidgets(answers))));
 

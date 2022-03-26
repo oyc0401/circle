@@ -3,6 +3,8 @@ import 'package:circle/playground.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
+import 'page/setting.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -25,6 +27,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(title: 'circle'),
+      //home: const EditPage(),
+
       //home: const playground(title: '놀이터'),
 
       // const MyHomePage(title: 'circle'),

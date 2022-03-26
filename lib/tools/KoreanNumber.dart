@@ -17,7 +17,7 @@ class KoreanNumber{
     }else if(200<=number&&number<1000){
       int firstnum=number~/100;
       int twice=number-(100*firstnum);
-      text=list[firstnum]+'백'+_changetwice(twice);
+      text=_list[firstnum]+'백'+_changetwice(twice);
     }
 
     return text;
@@ -27,21 +27,21 @@ class KoreanNumber{
     String text='';
 
     if(number<10){
-      text=list[number];
+      text=_list[number];
     } else if(10<=number && number<20){
       int secondnm=number%10;
-      text='십'+list[secondnm];
+      text='십'+_list[secondnm];
     }else if(20<=number && number<100){
       int firstnum=number~/10;
       int secondnm=number%10;
-      text=list[firstnum]+'십'+list[secondnm];
+      text=_list[firstnum]+'십'+_list[secondnm];
     }
 
     return text;
   }
 
 
-  check(){
+  _check(){
     for(int i=0;i<=999;i++){
       print(KoreanNumber(i).getnumber());
     }
@@ -49,5 +49,5 @@ class KoreanNumber{
 
 
 
-List list=['','일','이','삼','사','오','육','칠','팔','구'];
+List _list=['','일','이','삼','사','오','육','칠','팔','구'];
 }
