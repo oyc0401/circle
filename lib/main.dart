@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 import 'page/setting.dart';
+import 'page/view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,9 +27,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'circle'),
-      //home: const EditPage(),
 
+      //home: const MyHomePage(title: 'circle'),
+      //home: const EditPage(),
+      home: const ViewPage(title: 'circle'),
       //home: const playground(title: '놀이터'),
 
       // const MyHomePage(title: 'circle'),

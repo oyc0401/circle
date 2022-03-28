@@ -37,6 +37,12 @@ dependencies:
   flutter_tts: ^3.3.3
   shared_preferences: ^2.0.12
 
+  intl: ^0.17.0
+
+  sqflite: ^2.0.2
+  path: ^1.8.0
+  crypto: ^3.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
