@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:circle/DB/sqlLite.dart';
+import 'package:circle/page/home.dart';
 import 'package:circle/page/write.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,7 @@ class _ViewPageState extends State<ViewPage> {
                   alignment: Alignment.bottomCenter,
                   //color: Colors.green,
                   child: Text(
-                    box.createTime,
+                    "학년: "+box.grade,
                     style: TextStyle(fontSize: 15),
                   )),
             ],
@@ -113,20 +114,30 @@ class _ViewPageState extends State<ViewPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '남은 시간: remaining',
+                    '답:'+box.answerList().toString(),
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(
                     height: 3,
                   ),
                   Text(
-                    '완료 시간: completeTime',
+                    '수정 시간: '+box.editedTime,
                     style: TextStyle(fontSize: 16),
                   ),
                 ],
               ),
             ],
           ),
+          CupertinoButton(
+              child: Text('이동하기'),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => MyHomePage(
+                          userinfo: box,
+                        )));
+              }),
           CupertinoButton(
               child: Text('수정하기'),
               onPressed: () {

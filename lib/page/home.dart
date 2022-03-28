@@ -1,4 +1,5 @@
 import 'package:circle/DB/shared.dart';
+import 'package:circle/DB/sqlLite.dart';
 import 'package:circle/tools/Speaking.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'setting.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
+  const MyHomePage({Key? key, required this.userinfo}) : super(key: key);
+  final userInfo userinfo;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -30,10 +31,10 @@ class _MyHomePageState extends State<MyHomePage> {
     // keyValue.setSpeechRate(0.5);
     // keyValue.setVoice({'name': 'ko-kr-x-kod-network', 'locale': 'ko-KR'});
 
-    getList().then((answers) {
-      speaking.setAnswers(answers);
+
+      speaking.setAnswers(widget.userinfo.answerList());
       setState(() {});
-    });
+
    await getDATA();
 
   }
@@ -50,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
     print('뷰');
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('circle'),
         actions: [
           IconButton(
             onPressed: () {

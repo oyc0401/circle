@@ -28,7 +28,7 @@ class SQLite{
       return userInfo(
         id: maps[i]['id'],
         title: maps[i]['title'],
-        answers: 'vvsa',
+        answers: maps[i]['answers'],
         grade: maps[i]['grade'],
         createTime: maps[i]['createTime'],
         editedTime: maps[i]['editedTime'],
@@ -69,7 +69,6 @@ class userInfo {
   String grade;
   String createTime;
   String editedTime;
-  List answerList=[];
 
 
   userInfo({
@@ -80,6 +79,12 @@ class userInfo {
     required this.createTime,
     required this.editedTime,
   });
+
+  List answerList(){
+    List list= answers.split(',');
+    list.removeAt(0);
+    return list;
+  }
 
   // dog를 Map으로 변환합니다. key는 데이터베이스 컬럼 명과 동일해야 합니다.
   Map<String, dynamic> toMap() {
