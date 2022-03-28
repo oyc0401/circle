@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,20 +11,15 @@ import '../DB/sqlLite.dart';
 import 'home.dart';
 import 'view.dart';
 
-class EditPage extends StatefulWidget {
-  const EditPage({Key? key, required this.userinfo}) : super(key: key);
-  final userInfo userinfo;
+class WritePage extends StatefulWidget {
+  const WritePage({Key? key}) : super(key: key);
 
   @override
-  _EditPageState createState() => _EditPageState();
+  _WritePageState createState() => _WritePageState();
 }
 
-class _EditPageState extends State<EditPage> {
-
-  late userInfo userinfo = widget.userinfo;
-
-  List<userInfo> list=[];
-
+class _WritePageState extends State<WritePage> {
+  late userInfo userinfo;
 
   @override
   void initState() {
@@ -30,14 +28,34 @@ class _EditPageState extends State<EditPage> {
     init();
   }
 
-  init() async{
-    SQLite sqLite=await SQLite.Instance();
-    list= await sqLite.getInfo();
+  init() async {
+    userinfo = userInfo(
+      id: String2Sha256(DateTime.now().toString()),
+      title: '제목 없음',
+      answers: '[]',
+      grade: '1',
+      editedTime: DateTime.now().toString(),
+      createTime: DateTime.now().toString(),
+    );
+
+
+
+    // SQLite sqLite = await SQLite.Instance();
   }
 
-  save(userInfo user) async{
-    SQLite sqLite=await SQLite.Instance();
+  String String2Sha256(String text) {
+    var bytes = utf8.encode(text); // data being hashed
+    var digest = sha256.convert(bytes);
+    return digest.toString();
+  }
+
+  save(userInfo user) async {
+    SQLite sqLite = await SQLite.Instance();
     await sqLite.insertTime(user);
+  }
+
+  ListToString(){
+
   }
 
   @override
@@ -49,24 +67,22 @@ class _EditPageState extends State<EditPage> {
       body: ListView(
         children: [
           TextFormField(
-            initialValue: widget.userinfo.title,
             decoration: const InputDecoration(
               labelText: 'title',
             ),
             onChanged: (value) {
-              userinfo.title=value;
+              userinfo.title = value;
             },
           ),
           TextFormField(
-            initialValue: widget.userinfo.grade,
             decoration: const InputDecoration(
               labelText: 'grade',
             ),
             onChanged: (value) {
-              userinfo.grade=value;
+              userinfo.grade = value;
             },
+
           ),
-          
           CupertinoButton(
               child: Text('저장하기'),
               onPressed: () {

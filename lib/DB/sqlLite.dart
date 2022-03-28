@@ -3,14 +3,11 @@ import 'package:sqflite/sqflite.dart';
 
 class SQLite{
 
-  SQLite(){
-    joinDatabase();
-  }
+  late Future<Database> database;
 
-  late final Future<Database> database;
-
-  Future joinDatabase() async {
-    database = openDatabase(
+  static Future<SQLite> Instance() async {
+    SQLite sqLite=SQLite();
+    sqLite.database= openDatabase(
       join(await getDatabasesPath(), 'circle_database.db'),
       onCreate: (db, version) {
         return db.execute(
@@ -19,6 +16,8 @@ class SQLite{
       },
       version: 1,
     );
+
+    return sqLite;
   }
 
   Future<List<userInfo>> getInfo() async {
@@ -87,10 +86,10 @@ class userInfo {
     return {
       'id': id,
       'title': title,
-      'answers': answers,
       'grade': grade,
       'createTime': createTime,
       'editedTime': editedTime,
+      'answers': answers,
     };
   }
 }
