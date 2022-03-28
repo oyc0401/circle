@@ -7,6 +7,7 @@ class KeyValue {
   // get 은 퓨처값을 주지 말아야 하기 때문에 Instance가 필요하다.
   late SharedPreferences prefs;
 
+
   static Instance() async {
     KeyValue key = KeyValue();
     key.prefs = await SharedPreferences.getInstance();

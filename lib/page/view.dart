@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:circle/DB/sqlLite.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,17 +18,23 @@ class ViewPage extends StatefulWidget {
 }
 
 class _ViewPageState extends State<ViewPage> {
-  List<userInfo> info = [];
+
+  Future<List<userInfo>> info() async {
+    await joinDatabase();
+
+    List<userInfo> info = await getInfo();
+    print(info);
+
+
+
+    return info;
+  }
 
   late Future<Database> database;
 
   Future start() async {
     print('start');
     await joinDatabase();
-
-    await getInfo().then((value) => info = value);
-    //insertTime();
-    print(info);
   }
 
   Future joinDatabase() async {
@@ -75,7 +82,7 @@ class _ViewPageState extends State<ViewPage> {
   @override
   void initState() {
     super.initState();
-    start();
+    //start();
   }
 
   @override
@@ -98,20 +105,25 @@ class _ViewPageState extends State<ViewPage> {
   }
 
   Widget listSection(BuildContext context) {
-    List<Widget> widgetList = [];
-    int len = info.length;
-    for (int i = 0; i < len; i++) {
-      widgetList.add(unit(context,info[i]));
-    }
+    return FutureBuilder<List<userInfo>>(
+        future: info(),
+        builder: (context, snapshot) {
+          List<userInfo> list = snapshot.data ?? [];
 
-    Widget widget = Column(
-      children: widgetList,
-    );
+          int len = list.length;
 
-    return widget;
+          List<Widget> widgetList = [];
+
+          for (int i = 0; i < len; i++) {
+            widgetList.add(unit(context, list[i]));
+          }
+          return Column(
+            children: widgetList,
+          );
+        });
   }
 
-  Widget unit(BuildContext context,userInfo box) {
+  Widget unit(BuildContext context, userInfo box) {
     print(box.toMap());
 
     Widget wi = Container(
@@ -159,10 +171,16 @@ class _ViewPageState extends State<ViewPage> {
               ),
             ],
           ),
-          CupertinoButton(child: Text('수정하기'), onPressed: (){
-            Navigator.push(
-                context, CupertinoPageRoute(builder: (context) =>  EditPage(userinfo: box,)));
-          })
+          CupertinoButton(
+              child: Text('수정하기'),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => EditPage(
+                              userinfo: box,
+                            )));
+              })
         ],
       ),
     );
@@ -174,12 +192,11 @@ class _ViewPageState extends State<ViewPage> {
 class userInfo {
   final String id;
   String title;
-   String answers;
-   String grade;
-   String createTime;
-   String editedTime;
-  List answerList=[];
-
+  String answers;
+  String grade;
+  String createTime;
+  String editedTime;
+  List answerList = [];
 
   userInfo({
     required this.id,
