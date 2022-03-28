@@ -1,3 +1,4 @@
+import 'package:circle/page/edit.dart';
 import 'package:circle/page/home.dart';
 import 'package:circle/playground.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
       ),
 
       //home: const MyHomePage(title: 'circle'),
-      //home: const EditPage(),
+      //home: const EditPage(id: 'id',),
       home: const ViewPage(title: 'circle'),
       //home: const playground(title: '놀이터'),
 

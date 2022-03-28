@@ -91,17 +91,17 @@ class _ViewPageState extends State<ViewPage> {
               onPressed: () {
                 start();
               }),
-          listSection()
+          listSection(context)
         ],
       ),
     );
   }
 
-  Widget listSection() {
+  Widget listSection(BuildContext context) {
     List<Widget> widgetList = [];
     int len = info.length;
     for (int i = 0; i < len; i++) {
-      widgetList.add(unit(info[i]));
+      widgetList.add(unit(context,info[i]));
     }
 
     Widget widget = Column(
@@ -111,7 +111,7 @@ class _ViewPageState extends State<ViewPage> {
     return widget;
   }
 
-  Widget unit(userInfo box) {
+  Widget unit(BuildContext context,userInfo box) {
     print(box.toMap());
 
     Widget wi = Container(
@@ -159,6 +159,10 @@ class _ViewPageState extends State<ViewPage> {
               ),
             ],
           ),
+          CupertinoButton(child: Text('수정하기'), onPressed: (){
+            Navigator.push(
+                context, CupertinoPageRoute(builder: (context) =>  EditPage(userinfo: box,)));
+          })
         ],
       ),
     );
@@ -169,11 +173,12 @@ class _ViewPageState extends State<ViewPage> {
 
 class userInfo {
   final String id;
-  final String title;
-  final String answers;
-  final String grade;
-  final String createTime;
-  final String editedTime;
+  String title;
+   String answers;
+   String grade;
+   String createTime;
+   String editedTime;
+  List answerList=[];
 
 
   userInfo({
