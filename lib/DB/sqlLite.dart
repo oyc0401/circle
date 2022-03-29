@@ -1,13 +1,12 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class SQLite{
+class SQLite {
+  late Future<Database> _database;
+  String _orderBy = 'editedTime DESC';
 
-  late Future<Database> database;
-
-  static Future<SQLite> Instance() async {
-    SQLite sqLite=SQLite();
-    sqLite.database= openDatabase(
+  _setInstance() async {
+    _database = openDatabase(
       join(await getDatabasesPath(), 'circle_database.db'),
       onCreate: (db, version) {
         return db.execute(
@@ -16,14 +15,18 @@ class SQLite{
       },
       version: 1,
     );
-
-    return sqLite;
   }
-  String orderBy='editedTime DESC';
+
+
+  setOrderBy(String order) {
+    _orderBy = order;
+  }
 
   Future<List<userInfo>> getInfo() async {
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('circles',orderBy: orderBy);
+    await _setInstance();
+    final Database db = await _database;
+    final List<Map<String, dynamic>> maps =
+        await db.query('circles', orderBy: _orderBy);
 
     return List.generate(maps.length, (i) {
       return userInfo(
@@ -38,8 +41,9 @@ class SQLite{
   }
 
   Future<void> deleteInfo(String id) async {
+    await _setInstance();
     // 데이터베이스 reference를 얻습니다.
-    final db = await database;
+    final db = await _database;
 
     // 데이터베이스에서 Dog를 삭제합니다.
     await db.delete(
@@ -53,14 +57,14 @@ class SQLite{
 
   Future<void> insertTime(userInfo time) async {
     print('추가됌');
-    final Database db = await database;
+    await _setInstance();
+    final Database db = await _database;
     await db.insert(
       'circles',
       time.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-
 }
 
 class userInfo {
@@ -71,7 +75,6 @@ class userInfo {
   String createTime;
   String editedTime;
 
-
   userInfo({
     required this.id,
     required this.title,
@@ -81,8 +84,8 @@ class userInfo {
     required this.editedTime,
   });
 
-  List answerList(){
-    List list= answers.split(',');
+  List answerList() {
+    List list = answers.split(',');
     list.removeAt(0);
     return list;
   }

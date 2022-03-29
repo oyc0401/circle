@@ -21,6 +21,7 @@ class ViewPage extends StatefulWidget {
 
 class _ViewPageState extends State<ViewPage> {
   List<userInfo> list = [];
+  SQLite sqLite = SQLite();
 
   @override
   void initState() {
@@ -29,13 +30,11 @@ class _ViewPageState extends State<ViewPage> {
   }
 
   delete(String id) async {
-    SQLite sqLite = await SQLite.Instance();
     sqLite.deleteInfo(id);
   }
 
   init() async {
     print('init');
-    SQLite sqLite = await SQLite.Instance();
     list = await sqLite.getInfo();
     setState(() {});
   }
@@ -64,9 +63,24 @@ class _ViewPageState extends State<ViewPage> {
               }),
           Row(
             children: [
-              TextButton(onPressed: () {}, child: Text('1번')),
-              TextButton(onPressed: () {}, child: Text('2번')),
-              TextButton(onPressed: () {}, child: Text('3번'))
+              TextButton(
+                  onPressed: () {
+                    sqLite.setOrderBy('editedTime DESC');
+                    init();
+                  },
+                  child: Text('최근 수정 순')),
+              TextButton(
+                  onPressed: () {
+                    sqLite.setOrderBy('grade DESC');
+                    init();
+                  },
+                  child: Text('높은 학년 순')),
+              TextButton(
+                  onPressed: () {
+                    sqLite.setOrderBy('createTime DESC');
+                    init();
+                  },
+                  child: Text('촤근 생성 순'))
             ],
           ),
           listSection(context)
@@ -115,7 +129,6 @@ class _ViewPageState extends State<ViewPage> {
                   )),
             ],
           ),
-
           Row(
             children: [
               Column(
@@ -132,7 +145,6 @@ class _ViewPageState extends State<ViewPage> {
                   SizedBox(
                     height: 3,
                   ),
-
                 ],
               ),
             ],

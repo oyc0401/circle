@@ -84,7 +84,7 @@ class _EditPageState extends State<EditPage> {
 
     print(userinfo.toMap());
 
-    SQLite sqLite = await SQLite.Instance();
+    SQLite sqLite = SQLite();
     await sqLite.insertTime(user);
 
     Navigator.of(context).pop(true);
