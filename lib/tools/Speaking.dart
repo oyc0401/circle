@@ -14,6 +14,8 @@ class Speaking {
   List _answers = [];
   int _position = 0;
   bool _isSpeak = false;
+  int numberDuration = 300;
+  int answerDuration = 500;
 
   getAnswers() => _answers;
 
@@ -28,6 +30,12 @@ class Speaking {
   setPitch(double pitch) => _flutterTts.setPitch(pitch);
 
   setVoice(Map<String, String> voice) => _flutterTts.setVoice(voice);
+
+  setAnswerDuration(int dur) => answerDuration = dur;
+
+  setNumberDuration(int du) => numberDuration = du;
+
+
 
   void speak(int number, Function fun) {
     print('$number번 부터 말하기');
@@ -53,7 +61,7 @@ class Speaking {
     }
 
     String koreanNum = KoreanNumber(number).getnumber();
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: answerDuration));
     if (_isSpeak == true && _position == number)
       await _flutterTts.speak("$koreanNum번");
     _flutterTts.setCompletionHandler(() async {
@@ -67,8 +75,9 @@ class Speaking {
   Future _talkAnswer(int number, Function fun) async {
     int whereArray = number - 1;
     String answer = _answers[whereArray].toString();
-    await Future.delayed(Duration(milliseconds: 300));
-    if (_isSpeak == true && _position == number) await _flutterTts.speak(answer);
+    await Future.delayed(Duration(milliseconds: numberDuration));
+    if (_isSpeak == true && _position == number)
+      await _flutterTts.speak(answer);
 
     _flutterTts.setCompletionHandler(() async {
       print('answer Complete');

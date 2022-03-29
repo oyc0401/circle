@@ -15,7 +15,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final String Title = '3학년 listning';
   Speaking speaking = Speaking();
 
   @override
@@ -25,24 +24,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void init() async {
-
-    // keyValue.setVolume(1);
-    // keyValue.setPitch(0.9);
-    // keyValue.setSpeechRate(0.5);
-    // keyValue.setVoice({'name': 'ko-kr-x-kod-network', 'locale': 'ko-KR'});
-
-
-      speaking.setAnswers(widget.userinfo.answerList());
-      setState(() {});
-
-   await getDATA();
-
+    speaking.setAnswers(widget.userinfo.answerList());
+    setState(() {});
+    await getDATA();
   }
-  getDATA()async{
+
+  getDATA() async {
     KeyValue keyValue = await KeyValue.Instance();
     speaking.setVolume(keyValue.getVolume());
     speaking.setPitch(keyValue.getPitch());
     speaking.setSpeechRate(keyValue.getSpeechRate());
+    speaking.setAnswerDuration(keyValue.getAnswerDuration());
+    speaking.setNumberDuration(keyValue.getNumberDuration());
     //speaking.setVoice(keyValue.getVoice());
   }
 
@@ -56,14 +49,13 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             onPressed: () {
               speaking.stop();
-              Navigator.push(
-                  context, CupertinoPageRoute(builder: (context) =>  SettingPage()));
+              Navigator.push(context,
+                  CupertinoPageRoute(builder: (context) => SettingPage()));
             },
-            icon: const Icon(Icons.edit),
+            icon: const Icon(Icons.settings),
           ),
         ],
       ),
-
       bottomNavigationBar: BottomAppBar(child: navigationRow()),
       body: Column(
         children: [
@@ -73,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                 child: Text(
-                  Title,
+                  widget.userinfo.title,
                   style: TextStyle(
                     fontSize: 24,
                   ),
@@ -214,41 +206,4 @@ class _MyHomePageState extends State<MyHomePage> {
   setstate() {
     setState(() {});
   }
-
-  Future<List> getList() async {
-    List list = _answers;
-    await Future.delayed(Duration(milliseconds: 50));
-    return list;
-  }
-
-  final List _answers = [
-    1,
-    2,
-    3,
-    4,
-    5,
-    'snow',
-    2,
-    3,
-    4,
-    5,
-    1,
-    2,
-    3,
-    4,
-    5,
-    1,
-    2,
-    3,
-    4,
-    5,
-    1,
-    2,
-    3,
-    4,
-    5,
-    1,
-    2,
-    3,
-  ];
 }

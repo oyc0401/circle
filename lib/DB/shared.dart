@@ -32,6 +32,12 @@ class KeyValue {
     prefs.setString('voice_name', name);
     prefs.setString('voice_locale', locale);
   }
+  setNumberDuration(int numberDuration){
+    prefs.setInt('numberDuration', numberDuration);
+  }
+  setAnswerDuration(int answerDuration){
+    prefs.setInt('answerDuration', answerDuration);
+  }
 
   //
 
@@ -55,5 +61,13 @@ class KeyValue {
     String locale = prefs.getString('voice_locale') ?? "";
     Map<String, String> voice = {'name': name, 'locale': locale};
     return voice;
+  }
+  int getAnswerDuration(){
+    int answerDuration = prefs.getInt('answerDuration') ?? 500;
+    return answerDuration;
+  }
+  int getNumberDuration(){
+    int numberDuration = prefs.getInt('numberDuration') ?? 300;
+    return numberDuration;
   }
 }

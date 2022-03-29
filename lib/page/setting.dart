@@ -19,12 +19,16 @@ class _SettingPageState extends State<SettingPage> {
   double volume = 1;
   double pitch = 0.9;
   double rate = 0.5;
+  int answerDuration=500;
+  int numDuration=300;
 
   _save() async {
     KeyValue keyValue = await KeyValue.Instance();
     keyValue.setVolume(volume);
     keyValue.setPitch(pitch);
     keyValue.setSpeechRate(rate);
+    keyValue.setNumberDuration(numDuration);
+    keyValue.setAnswerDuration(answerDuration);
     Navigator.of(context).pop(true);
   }
 
@@ -40,6 +44,8 @@ class _SettingPageState extends State<SettingPage> {
     volume = keyValue.getVolume();
     pitch = keyValue.getPitch();
     rate = keyValue.getSpeechRate();
+    numDuration=keyValue.getNumberDuration();
+    answerDuration=keyValue.getAnswerDuration();
     setState(() {});
   }
 
@@ -60,6 +66,8 @@ class _SettingPageState extends State<SettingPage> {
                 volume = 1;
                 pitch = 0.9;
                 rate = 0.5;
+                numDuration=300;
+                answerDuration=500;
 
                 setState(() {});
               })
@@ -75,7 +83,7 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget _buildSliders() {
     return Column(
-      children: [_volume(), _pitch(), _rate()],
+      children: [_volume(), _pitch(), _rate(),_numDuration(),_ansDuration()],
     );
   }
 
@@ -116,6 +124,32 @@ class _SettingPageState extends State<SettingPage> {
       divisions: 10,
       label: "Rate: $rate",
       activeColor: Colors.green,
+    );
+  }
+  Widget _numDuration() {
+    return Slider(
+      value: numDuration.toDouble(),
+      onChanged: (newDuration) {
+        setState(() => numDuration = newDuration.toInt());
+      },
+      min: 0,
+      max: 1000,
+      divisions: 10,
+      label: "numDuration: $numDuration",
+      activeColor: Colors.yellow,
+    );
+  }
+  Widget _ansDuration() {
+    return Slider(
+      value: answerDuration.toDouble(),
+      onChanged: (newDuration) {
+        setState(() => answerDuration = newDuration.toInt());
+      },
+      min: 0,
+      max: 1000,
+      divisions: 10,
+      label: "answerDuration: $answerDuration",
+      activeColor: Colors.purple,
     );
   }
 }
