@@ -19,10 +19,11 @@ class SQLite{
 
     return sqLite;
   }
+  String orderBy='editedTime DESC';
 
   Future<List<userInfo>> getInfo() async {
     final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('circles');
+    final List<Map<String, dynamic>> maps = await db.query('circles',orderBy: orderBy);
 
     return List.generate(maps.length, (i) {
       return userInfo(

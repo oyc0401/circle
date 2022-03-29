@@ -62,6 +62,13 @@ class _ViewPageState extends State<ViewPage> {
               onPressed: () {
                 init();
               }),
+          Row(
+            children: [
+              TextButton(onPressed: () {}, child: Text('1번')),
+              TextButton(onPressed: () {}, child: Text('2번')),
+              TextButton(onPressed: () {}, child: Text('3번'))
+            ],
+          ),
           listSection(context)
         ],
       ),
@@ -103,27 +110,29 @@ class _ViewPageState extends State<ViewPage> {
                   alignment: Alignment.bottomCenter,
                   //color: Colors.green,
                   child: Text(
-                    "학년: "+box.grade,
+                    "학년: " + box.grade,
                     style: TextStyle(fontSize: 15),
                   )),
             ],
           ),
+
           Row(
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '답:'+box.answerList().toString(),
+                    '수정 시간: ' + box.editedTime,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    '답:' + box.answerList().toString(),
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(
                     height: 3,
                   ),
-                  Text(
-                    '수정 시간: '+box.editedTime,
-                    style: TextStyle(fontSize: 16),
-                  ),
+
                 ],
               ),
             ],
@@ -135,8 +144,8 @@ class _ViewPageState extends State<ViewPage> {
                     context,
                     CupertinoPageRoute(
                         builder: (context) => MyHomePage(
-                          userinfo: box,
-                        )));
+                              userinfo: box,
+                            )));
               }),
           CupertinoButton(
               child: Text('수정하기'),

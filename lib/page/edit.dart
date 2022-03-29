@@ -75,6 +75,8 @@ class _EditPageState extends State<EditPage> {
   }
 
   save(userInfo user, BuildContext context) async {
+    user.editedTime=DateTime.now().toString();
+
     print(answers);
 
     List list = lastRemove(answers);
