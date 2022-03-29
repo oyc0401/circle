@@ -39,6 +39,35 @@ class _ViewPageState extends State<ViewPage> {
     setState(() {});
   }
 
+  _navigateEditPage(BuildContext context, userInfo user) async {
+    await Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (context) => EditPage(userinfo: user)),
+    );
+
+    print('back');
+    init();
+  }
+
+  _navigateWritePage(BuildContext context) async {
+    await Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (context) => WritePage()),
+    );
+    print('back');
+    init();
+  }
+
+  _navigateHomePage(BuildContext context, userInfo user) async {
+    await Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (context) => MyHomePage(userinfo: user)),
+    );
+    print('back');
+    init();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,8 +76,7 @@ class _ViewPageState extends State<ViewPage> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(context,
-                  CupertinoPageRoute(builder: (context) => WritePage()));
+              _navigateWritePage(context);
             },
             icon: const Icon(Icons.edit),
           ),
@@ -56,43 +84,48 @@ class _ViewPageState extends State<ViewPage> {
       ),
       body: ListView(
         children: [
-          CupertinoButton(
-              child: Text('새로고침'),
-              onPressed: () {
-                init();
-              }),
-          Row(
-            children: [
-              TextButton(
-                  onPressed: () {
-                    sqLite.setOrderBy('editedTime DESC');
-                    init();
-                  },
-                  child: Text('최근 수정 순')),
-              TextButton(
-                  onPressed: () {
-                    sqLite.setOrderBy('grade DESC');
-                    init();
-                  },
-                  child: Text('높은 학년 순')),
-              TextButton(
-                  onPressed: () {
-                    sqLite.setOrderBy('createTime DESC');
-                    init();
-                  },
-                  child: Text('최근 생성 순')),
-              TextButton(
-                  onPressed: () {
-                    sqLite.setOrderBy('viewTime DESC');
-                    init();
-                  },
-                  child: Text('최근 열람 순'))
-            ],
-          ),
+          // CupertinoButton(
+          //     child: Text('새로고침'),
+          //     onPressed: () {
+          //       init();
+          //     }),
+          orderBySection(),
           listSection(context)
         ],
       ),
     );
+  }
+
+  Widget orderBySection(){
+    Widget widget=Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              sqLite.setOrderBy('editedTime DESC');
+              init();
+            },
+            child: Text('최근 수정 순')),
+        TextButton(
+            onPressed: () {
+              sqLite.setOrderBy('grade DESC');
+              init();
+            },
+            child: Text('높은 학년 순')),
+        TextButton(
+            onPressed: () {
+              sqLite.setOrderBy('createTime DESC');
+              init();
+            },
+            child: Text('최근 생성 순')),
+        TextButton(
+            onPressed: () {
+              sqLite.setOrderBy('viewTime DESC');
+              init();
+            },
+            child: Text('최근 열람 순'))
+      ],
+    );
+    return widget;
   }
 
   Widget listSection(BuildContext context) {
@@ -140,7 +173,6 @@ class _ViewPageState extends State<ViewPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Text(
                     '답:' + box.answerList().toString(),
                     style: TextStyle(fontSize: 16),
@@ -157,7 +189,6 @@ class _ViewPageState extends State<ViewPage> {
                     '최근 본 시간: ' + box.viewTime,
                     style: TextStyle(fontSize: 16),
                   ),
-
                   SizedBox(
                     height: 3,
                   ),
@@ -168,25 +199,15 @@ class _ViewPageState extends State<ViewPage> {
           CupertinoButton(
               child: Text('이동하기'),
               onPressed: () {
-                userInfo user=box;
-                user.viewTime=DateTime.now().toString();
+                userInfo user = box;
+                user.viewTime = DateTime.now().toString();
                 sqLite.insertTime(user);
-                Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                        builder: (context) => MyHomePage(
-                              userinfo: box,
-                            )));
+                _navigateHomePage(context, box);
               }),
           CupertinoButton(
               child: Text('수정하기'),
               onPressed: () {
-                Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                        builder: (context) => EditPage(
-                              userinfo: box,
-                            )));
+                _navigateEditPage(context, box);
               }),
           CupertinoButton(
               child: Text('삭제하기'),
