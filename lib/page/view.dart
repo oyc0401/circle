@@ -80,7 +80,13 @@ class _ViewPageState extends State<ViewPage> {
                     sqLite.setOrderBy('createTime DESC');
                     init();
                   },
-                  child: Text('촤근 생성 순'))
+                  child: Text('최근 생성 순')),
+              TextButton(
+                  onPressed: () {
+                    sqLite.setOrderBy('viewTime DESC');
+                    init();
+                  },
+                  child: Text('최근 열람 순'))
             ],
           ),
           listSection(context)
@@ -134,14 +140,24 @@ class _ViewPageState extends State<ViewPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+
+                  Text(
+                    '답:' + box.answerList().toString(),
+                    style: TextStyle(fontSize: 16),
+                  ),
                   Text(
                     '수정 시간: ' + box.editedTime,
                     style: TextStyle(fontSize: 16),
                   ),
                   Text(
-                    '답:' + box.answerList().toString(),
+                    '생성 시간: ' + box.createTime,
                     style: TextStyle(fontSize: 16),
                   ),
+                  Text(
+                    '최근 본 시간: ' + box.viewTime,
+                    style: TextStyle(fontSize: 16),
+                  ),
+
                   SizedBox(
                     height: 3,
                   ),
@@ -152,6 +168,9 @@ class _ViewPageState extends State<ViewPage> {
           CupertinoButton(
               child: Text('이동하기'),
               onPressed: () {
+                userInfo user=box;
+                user.viewTime=DateTime.now().toString();
+                sqLite.insertTime(user);
                 Navigator.push(
                     context,
                     CupertinoPageRoute(

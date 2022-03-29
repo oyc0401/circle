@@ -10,13 +10,12 @@ class SQLite {
       join(await getDatabasesPath(), 'circle_database.db'),
       onCreate: (db, version) {
         return db.execute(
-          "CREATE TABLE circles(id TEXT PRIMARY KEY, title TEXT, answers TEXT, grade TEXT, createTime TEXT, editedTime TEXT)",
+          "CREATE TABLE circles(id TEXT PRIMARY KEY, title TEXT, answers TEXT, grade TEXT, createTime TEXT, editedTime TEXT,viewTime TEXT)",
         );
       },
       version: 1,
     );
   }
-
 
   setOrderBy(String order) {
     _orderBy = order;
@@ -30,13 +29,13 @@ class SQLite {
 
     return List.generate(maps.length, (i) {
       return userInfo(
-        id: maps[i]['id'],
-        title: maps[i]['title'],
-        answers: maps[i]['answers'],
-        grade: maps[i]['grade'],
-        createTime: maps[i]['createTime'],
-        editedTime: maps[i]['editedTime'],
-      );
+          id: maps[i]['id'],
+          title: maps[i]['title'],
+          answers: maps[i]['answers'],
+          grade: maps[i]['grade'],
+          createTime: maps[i]['createTime'],
+          editedTime: maps[i]['editedTime'],
+          viewTime: maps[i]['viewTime']);
     });
   }
 
@@ -74,15 +73,16 @@ class userInfo {
   String grade;
   String createTime;
   String editedTime;
+  String viewTime;
 
-  userInfo({
-    required this.id,
-    required this.title,
-    required this.answers,
-    required this.grade,
-    required this.createTime,
-    required this.editedTime,
-  });
+  userInfo(
+      {required this.id,
+      required this.title,
+      required this.answers,
+      required this.grade,
+      required this.createTime,
+      required this.editedTime,
+      required this.viewTime});
 
   List answerList() {
     List list = answers.split(',');
@@ -98,6 +98,7 @@ class userInfo {
       'grade': grade,
       'createTime': createTime,
       'editedTime': editedTime,
+      'viewTime': viewTime,
       'answers': answers,
     };
   }

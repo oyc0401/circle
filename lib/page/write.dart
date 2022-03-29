@@ -33,13 +33,13 @@ class _WritePageState extends State<WritePage> {
 
   init() async {
     userinfo = userInfo(
-      id: String2Sha256(DateTime.now().toString()),
-      title: '제목 없음',
-      answers: '[]',
-      grade: '1',
-      editedTime: DateTime.now().toString(),
-      createTime: DateTime.now().toString(),
-    );
+        id: String2Sha256(DateTime.now().toString()),
+        title: '제목 없음',
+        answers: '[]',
+        grade: '1',
+        editedTime: DateTime.now().toString(),
+        createTime: DateTime.now().toString(),
+        viewTime: DateTime.now().toString());
 
     // SQLite sqLite = await SQLite.Instance();
   }
@@ -50,7 +50,7 @@ class _WritePageState extends State<WritePage> {
     return digest.toString();
   }
 
-  lastRemove(List list){
+  lastRemove(List list) {
     for (int i = 1; i <= list.length; i++) {
       if (list.last == '') {
         list.removeLast();
@@ -68,30 +68,30 @@ class _WritePageState extends State<WritePage> {
 
     print(list);
 
-   String value= ListToString(list);
-   userinfo.answers=value;
+    String value = ListToString(list);
+    userinfo.answers = value;
 
-    List op=StringToList(value);
+    List op = StringToList(value);
 
     print(userinfo.toMap());
-
 
     SQLite sqLite = SQLite();
     await sqLite.insertTime(user);
 
     Navigator.of(context).pop(true);
   }
-  StringToList(String string){
-    List list= string.split(',');
+
+  StringToList(String string) {
+    List list = string.split(',');
     list.removeAt(0);
     return list;
   }
 
   ListToString(List list) {
-    String string='';
+    String string = '';
 
     list.forEach((element) {
-      string='$string,$element';
+      string = '$string,$element';
     });
     print(string);
     return string;
@@ -120,7 +120,7 @@ class _WritePageState extends State<WritePage> {
           CupertinoButton(
               child: Text('저장하기'),
               onPressed: () {
-                save(userinfo,context);
+                save(userinfo, context);
               })
         ],
       ),
