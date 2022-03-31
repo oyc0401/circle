@@ -21,51 +21,41 @@ class ViewPage extends StatefulWidget {
 }
 
 class _ViewPageState extends State<ViewPage> {
-  List<userInfo> list = [];
+  List<userInfo> user_infomations = [];
   SQLite sqLite = SQLite();
-
+  String? selectedValue;
   @override
   void initState() {
     super.initState();
     init();
   }
 
-  delete(String id) async {
-    sqLite.deleteInfo(id);
+  void setorderby(String value) {
+    switch (value) {
+      case '최근 열람 순':
+        print(value);
+        sqLite.setOrderBy('viewTime DESC');
+        break;
+      case '최근 수정 순':
+        print(value);
+        sqLite.setOrderBy('editedTime DESC');
+        break;
+      case '높은 학년 순':
+        print(value);
+        sqLite.setOrderBy('grade DESC');
+        break;
+      case '최근 생성 순':
+        print(value);
+        sqLite.setOrderBy('createTime DESC');
+        break;
+    }
+    init();
   }
 
   init() async {
     print('init');
-    list = await sqLite.getInfo();
+    user_infomations = await sqLite.getInfo();
     setState(() {});
-  }
-
-  _navigateEditPage(BuildContext context, userInfo user) async {
-    await Navigator.push(
-      context,
-      CupertinoPageRoute(builder: (context) => EditPage(userinfo: user)),
-    );
-
-    print('back');
-    init();
-  }
-
-  _navigateWritePage(BuildContext context) async {
-    await Navigator.push(
-      context,
-      CupertinoPageRoute(builder: (context) => WritePage()),
-    );
-    print('back');
-    init();
-  }
-
-  _navigateHomePage(BuildContext context, userInfo user) async {
-    await Navigator.push(
-      context,
-      CupertinoPageRoute(builder: (context) => MyHomePage(userinfo: user)),
-    );
-    print('back');
-    init();
   }
 
   @override
@@ -87,8 +77,6 @@ class _ViewPageState extends State<ViewPage> {
       ),
     );
   }
-
-  String? selectedValue;
 
   Widget orderBySection(BuildContext context) {
     final List<String> items = [
@@ -134,32 +122,10 @@ class _ViewPageState extends State<ViewPage> {
     );
   }
 
-  setorderby(String value) {
-    switch (value) {
-      case '최근 열람 순':
-        print(value);
-        sqLite.setOrderBy('viewTime DESC');
-        break;
-      case '최근 수정 순':
-        print(value);
-        sqLite.setOrderBy('editedTime DESC');
-        break;
-      case '높은 학년 순':
-        print(value);
-        sqLite.setOrderBy('grade DESC');
-        break;
-      case '최근 생성 순':
-        print(value);
-        sqLite.setOrderBy('createTime DESC');
-        break;
-    }
-    init();
-  }
-
   Widget listSection(BuildContext context) {
     final List<Widget> widgetList = [];
 
-    list.forEach((element) {
+    user_infomations.forEach((element) {
       widgetList.add(unit(context, element));
     });
 
@@ -198,84 +164,131 @@ class _ViewPageState extends State<ViewPage> {
       return Row(children: circles);
     }
 
-    return Container(
-      margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-      padding: const EdgeInsets.fromLTRB(18, 8, 8, 8),
-      color: Colors.amberAccent,
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Text(
-                box.title,
-                style: TextStyle(fontSize: 30),
-              ),
-              SizedBox(
-                width: 15,
-              ),
-              Container(
-                  height: 30,
-                  alignment: Alignment.bottomCenter,
-                  //color: Colors.green,
-                  child: Text(
-                    "학년: " + box.grade,
-                    style: TextStyle(fontSize: 15),
-                  )),
-              Spacer(),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.more_vert,
+    return InkWell(
+      onTap: () {
+        _onTapBox(box, context);
+      },
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+        padding: const EdgeInsets.fromLTRB(18, 8, 8, 8),
+        color: Colors.amberAccent,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Text(
+                  box.title,
+                  style: TextStyle(fontSize: 30),
                 ),
-              )
-            ],
-          ),
-          circleRow(),
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '수정 시간: ' + box.editedTime,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    '생성 시간: ' + box.createTime,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    '최근 본 시간: ' + box.viewTime,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(
-                    height: 3,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          CupertinoButton(
-              child: Text('이동하기'),
-              onPressed: () {
-                userInfo user = box;
-                user.viewTime = DateTime.now().toString();
-                sqLite.insertTime(user);
-                _navigateHomePage(context, box);
-              }),
-          CupertinoButton(
-              child: Text('수정하기'),
-              onPressed: () {
-                _navigateEditPage(context, box);
-              }),
-          CupertinoButton(
-              child: Text('삭제하기'),
-              onPressed: () {
-                delete(box.id);
-                init();
-              })
-        ],
+                const SizedBox(
+                  width: 15,
+                ),
+                Container(
+                    height: 30,
+                    alignment: Alignment.bottomCenter,
+                    //color: Colors.green,
+                    child: Text(
+                      "학년: " + box.grade,
+                      style: TextStyle(fontSize: 15),
+                    )),
+                Spacer(),
+                PopupMenuButton(
+                    icon: Icon(Icons.more_vert),
+                    itemBuilder: (context) {
+                      return [
+                        const PopupMenuItem<int>(
+                          value: 0,
+                          child: Text("수정"),
+                        ),
+                        const PopupMenuItem<int>(
+                          value: 1,
+                          child: Text("삭제"),
+                        ),
+                      ];
+                    },
+                    onSelected: (value) {
+                      if (value == 0) {
+                        _onTapEditButton(context, box);
+                      } else if (value == 1) {
+                        _onTapDeleteButton(box);
+                      }
+                    }),
+              ],
+            ),
+            circleRow(),
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '수정 시간: ' + box.editedTime,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Text(
+                      '생성 시간: ' + box.createTime,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Text(
+                      '최근 본 시간: ' + box.viewTime,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 3,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  void _navigateEditPage(BuildContext context, userInfo user) async {
+    await Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (context) => EditPage(userinfo: user)),
+    );
+    print('back');
+    init();
+  }
+
+  void _navigateWritePage(BuildContext context) async {
+    await Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (context) => WritePage()),
+    );
+    print('back');
+    init();
+  }
+
+  void _navigateHomePage(BuildContext context, userInfo user) async {
+    await Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (context) => MyHomePage(userinfo: user)),
+    );
+    print('back');
+    init();
+  }
+
+  void _onTapDeleteButton(userInfo box) {
+    print("삭제하기");
+    sqLite.deleteInfo(box.id);
+    init();
+  }
+
+  void _onTapEditButton(BuildContext context, userInfo box) {
+    print("수정하기");
+    _navigateEditPage(context, box);
+  }
+
+  void _onTapBox(userInfo box, BuildContext context) {
+    print('이동하기');
+    userInfo user = box;
+    user.viewTime = DateTime.now().toString();
+    sqLite.insertTime(user);
+    _navigateHomePage(context, box);
   }
 }
