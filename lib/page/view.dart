@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:circle/DB/sqlLite.dart';
 import 'package:circle/page/home.dart';
 import 'package:circle/page/write.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -65,7 +66,6 @@ class _ViewPageState extends State<ViewPage> {
     );
     print('back');
     init();
-
   }
 
   @override
@@ -83,49 +83,77 @@ class _ViewPageState extends State<ViewPage> {
         ],
       ),
       body: ListView(
-        children: [
-          // CupertinoButton(
-          //     child: Text('새로고침'),
-          //     onPressed: () {
-          //       init();
-          //     }),
-          orderBySection(),
-          listSection(context)
-        ],
+        children: [orderBySection(context), listSection(context)],
       ),
     );
   }
 
-  Widget orderBySection(){
-    Widget widget=Row(
-      children: [
-        TextButton(
-            onPressed: () {
-              sqLite.setOrderBy('editedTime DESC');
-              init();
-            },
-            child: Text('최근 수정 순')),
-        TextButton(
-            onPressed: () {
-              sqLite.setOrderBy('grade DESC');
-              init();
-            },
-            child: Text('높은 학년 순')),
-        TextButton(
-            onPressed: () {
-              sqLite.setOrderBy('createTime DESC');
-              init();
-            },
-            child: Text('최근 생성 순')),
-        TextButton(
-            onPressed: () {
-              sqLite.setOrderBy('viewTime DESC');
-              init();
-            },
-            child: Text('최근 열람 순'))
-      ],
+  String? selectedValue;
+
+  Widget orderBySection(BuildContext context) {
+    final List<String> items = [
+      '최근 열람 순',
+      '최근 수정 순',
+      '높은 학년 순',
+      '최근 생성 순',
+    ];
+    return Center(
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton2(
+          hint: const Text(
+            '최근 열람 순',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+            ),
+          ),
+          items: items
+              .map((item) => DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(
+                      item,
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ))
+              .toList(),
+          value: selectedValue,
+          onChanged: (value) {
+            setState(() {
+              selectedValue = value.toString();
+
+              setorderby(value.toString());
+            });
+          },
+          buttonHeight: 40,
+          buttonWidth: 140,
+          itemHeight: 40,
+        ),
+      ),
     );
-    return widget;
+  }
+
+  setorderby(String value) {
+    switch (value) {
+      case '최근 열람 순':
+        print(value);
+        sqLite.setOrderBy('viewTime DESC');
+        break;
+      case '최근 수정 순':
+        print(value);
+        sqLite.setOrderBy('editedTime DESC');
+        break;
+      case '높은 학년 순':
+        print(value);
+        sqLite.setOrderBy('grade DESC');
+        break;
+      case '최근 생성 순':
+        print(value);
+        sqLite.setOrderBy('createTime DESC');
+        break;
+    }
+    init();
   }
 
   Widget listSection(BuildContext context) {
@@ -143,7 +171,34 @@ class _ViewPageState extends State<ViewPage> {
   Widget unit(BuildContext context, userInfo box) {
     print(box.toMap());
 
-    Widget wi = Container(
+    Widget circleRow() {
+      List answers = box.answerList();
+      List<Widget> circles = [];
+      for (int i = 0; i < answers.length && i < 5; i++) {
+        Widget circle = Container(
+          width: 40,
+          height: 40,
+          margin: EdgeInsets.fromLTRB(0, 0, 6, 0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            border: Border.all(),
+          ),
+          child: Center(
+            child: Text(answers[i],
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.w500)),
+          ),
+        );
+
+        circles.add(circle);
+      }
+      return Row(children: circles);
+    }
+
+    return Container(
       margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
       padding: const EdgeInsets.fromLTRB(18, 8, 8, 8),
       color: Colors.amberAccent,
@@ -166,17 +221,21 @@ class _ViewPageState extends State<ViewPage> {
                     "학년: " + box.grade,
                     style: TextStyle(fontSize: 15),
                   )),
+              Spacer(),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.more_vert,
+                ),
+              )
             ],
           ),
+          circleRow(),
           Row(
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '답:' + box.answerList().toString(),
-                    style: TextStyle(fontSize: 16),
-                  ),
                   Text(
                     '수정 시간: ' + box.editedTime,
                     style: TextStyle(fontSize: 16),
@@ -218,7 +277,5 @@ class _ViewPageState extends State<ViewPage> {
         ],
       ),
     );
-
-    return wi;
   }
 }
