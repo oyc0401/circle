@@ -1,16 +1,11 @@
-import 'dart:convert';
 
 import 'package:circle/tools/SrtingHandle.dart';
-import 'package:crypto/crypto.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../DB/sqlLite.dart';
-import 'home.dart';
-import 'view.dart';
+
 
 class EditPage extends StatefulWidget {
   const EditPage({Key? key, required this.userinfo}) : super(key: key);

@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:circle/DB/sqlLite.dart';
 import 'package:circle/page/home.dart';
-import 'package:circle/page/write.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../tools/SrtingHandle.dart';
+import 'edit.dart';
 import 'edit.dart';
 
 class ViewPage extends StatefulWidget {
@@ -70,7 +71,16 @@ class _ViewPageState extends State<ViewPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _navigateWritePage(context);
+          userInfo us = userInfo(
+              id: StringHandle.String2Sha256(DateTime.now().toString()),
+              title: '',
+              answers: StringHandle.ListToString(['','','','']),
+              grade: '',
+              editedTime: DateTime.now().toString(),
+              createTime: DateTime.now().toString(),
+              viewTime: DateTime.now().toString());
+          //_navigateWritePage(context);
+          _navigateEditPage(context, us);
         },
         tooltip: '추가하기',
         child: const Icon(Icons.add),
@@ -96,15 +106,16 @@ class _ViewPageState extends State<ViewPage> {
             ),
           ),
           items: items
-              .map((item) => DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(
-                      item,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
-                    ),
-                  ))
+              .map((item) =>
+              DropdownMenuItem<String>(
+                value: item,
+                child: Text(
+                  item,
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ))
               .toList(),
           value: selectedValue,
           onChanged: (value) {
@@ -210,7 +221,7 @@ class _ViewPageState extends State<ViewPage> {
                       if (value == 0) {
                         _onTapEditButton(context, box);
                       } else if (value == 1) {
-                        _onTapDeleteButton(box,context);
+                        _onTapDeleteButton(box, context);
                       }
                     }),
               ],
@@ -255,15 +266,6 @@ class _ViewPageState extends State<ViewPage> {
     init();
   }
 
-  void _navigateWritePage(BuildContext context) async {
-    await Navigator.push(
-      context,
-      CupertinoPageRoute(builder: (context) => WritePage()),
-    );
-    print('back');
-    init();
-  }
-
   void _navigateHomePage(BuildContext context, userInfo user) async {
     await Navigator.push(
       context,
@@ -274,8 +276,7 @@ class _ViewPageState extends State<ViewPage> {
     init();
   }
 
-  void _onTapDeleteButton(userInfo box ,BuildContext context) {
-
+  void _onTapDeleteButton(userInfo box, BuildContext context) {
     showDialog(
         context: context,
         //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
@@ -297,8 +298,8 @@ class _ViewPageState extends State<ViewPage> {
               ],
             ),
             actions: <Widget>[
-               TextButton(
-                child:  Text("네"),
+              TextButton(
+                child: Text("네"),
                 onPressed: () {
                   Navigator.pop(context);
                   print("삭제하기");
@@ -307,7 +308,7 @@ class _ViewPageState extends State<ViewPage> {
                 },
               ),
               TextButton(
-                child:  Text("아니요"),
+                child: Text("아니요"),
                 onPressed: () {
                   Navigator.pop(context);
                 },
