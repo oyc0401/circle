@@ -42,7 +42,7 @@ class KeyValue {
   //
 
   double getPitch() {
-    double pitch = prefs.getDouble('pitch') ?? 1;
+    double pitch = prefs.getDouble('pitch') ?? 0.9;
     return pitch;
   }
 
@@ -52,7 +52,7 @@ class KeyValue {
   }
 
   double getSpeechRate() {
-    double speechRate = prefs.getDouble('speechRate') ?? 1;
+    double speechRate = prefs.getDouble('speechRate') ?? 0.5;
     return speechRate;
   }
 

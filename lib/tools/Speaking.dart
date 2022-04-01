@@ -4,9 +4,9 @@ import 'KoreanNumber.dart';
 
 class Speaking {
   Speaking() {
-    _flutterTts.setSpeechRate(0.9);
+    _flutterTts.setSpeechRate(0.5);
     _flutterTts.setVolume(1);
-    _flutterTts.setPitch(0.5);
+    _flutterTts.setPitch(0.9);
     _flutterTts.setVoice({'name': 'ko-kr-x-kod-network', 'locale': 'ko-KR'});
   }
 

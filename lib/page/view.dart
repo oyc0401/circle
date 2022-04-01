@@ -24,6 +24,7 @@ class _ViewPageState extends State<ViewPage> {
   List<userInfo> user_infomations = [];
   SQLite sqLite = SQLite();
   String? selectedValue;
+
   @override
   void initState() {
     super.initState();
@@ -63,17 +64,16 @@ class _ViewPageState extends State<ViewPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        actions: [
-          IconButton(
-            onPressed: () {
-              _navigateWritePage(context);
-            },
-            icon: const Icon(Icons.edit),
-          ),
-        ],
       ),
       body: ListView(
         children: [orderBySection(context), listSection(context)],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _navigateWritePage(context);
+        },
+        tooltip: '추가하기',
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -210,7 +210,7 @@ class _ViewPageState extends State<ViewPage> {
                       if (value == 0) {
                         _onTapEditButton(context, box);
                       } else if (value == 1) {
-                        _onTapDeleteButton(box);
+                        _onTapDeleteButton(box,context);
                       }
                     }),
               ],
@@ -267,16 +267,54 @@ class _ViewPageState extends State<ViewPage> {
   void _navigateHomePage(BuildContext context, userInfo user) async {
     await Navigator.push(
       context,
-      CupertinoPageRoute(builder: (context) => MyHomePage(userinfo: user)),
+      CupertinoPageRoute(
+          builder: (context) => MyHomePage(userinfo: user)),
     );
     print('back');
     init();
   }
 
-  void _onTapDeleteButton(userInfo box) {
-    print("삭제하기");
-    sqLite.deleteInfo(box.id);
-    init();
+  void _onTapDeleteButton(userInfo box ,BuildContext context) {
+
+    showDialog(
+        context: context,
+        //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+        builder: (BuildContext context) {
+          return AlertDialog(
+            // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            //Dialog Main Title
+            title: Text("삭제"),
+            //
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "삭제 하시겠습니까?",
+                ),
+              ],
+            ),
+            actions: <Widget>[
+               TextButton(
+                child:  Text("네"),
+                onPressed: () {
+                  Navigator.pop(context);
+                  print("삭제하기");
+                  sqLite.deleteInfo(box.id);
+                  init();
+                },
+              ),
+              TextButton(
+                child:  Text("아니요"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
   }
 
   void _onTapEditButton(BuildContext context, userInfo box) {
