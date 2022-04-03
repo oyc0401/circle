@@ -5,9 +5,10 @@ import 'KoreanNumber.dart';
 class Speaking {
   Speaking() {
     _flutterTts.setSpeechRate(0.5);
-    _flutterTts.setVolume(1);
-    _flutterTts.setPitch(0.9);
-    _flutterTts.setVoice({'name': 'ko-kr-x-kod-network', 'locale': 'ko-KR'});
+    _flutterTts.setVolume(0.5);
+    _flutterTts.setPitch(1);
+    //_flutterTts.setVoice({'name': 'ko-kr-x-kod-network', 'locale': 'ko-KR'});
+    _flutterTts.setVoice({'name': '', 'locale': 'ko-KR'});
   }
 
   final FlutterTts _flutterTts = FlutterTts();
@@ -35,7 +36,12 @@ class Speaking {
 
   setNumberDuration(int du) => numberDuration = du;
 
+  void practiceStart()async{
+    //await _flutterTts.speak("안녕하세요, 1번, 2번, 3번, 4번, 5번, 북치기박치기북치기박치기");
+    await _flutterTts.speak("4");
 
+
+  }
 
   void speak(int number, Function fun) {
     print('$number번 부터 말하기');

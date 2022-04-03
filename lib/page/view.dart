@@ -82,7 +82,7 @@ class _ViewPageState extends State<ViewPage> {
               createTime: DateTime.now().toString(),
               viewTime: DateTime.now().toString());
           //_navigateWritePage(context);
-          _navigateEditPage(context, us);
+          _navigateEditPage(context, us, '추가하기');
         },
         tooltip: '추가하기',
         child: const Icon(Icons.add),
@@ -196,8 +196,8 @@ class _ViewPageState extends State<ViewPage> {
     Widget circleRow() {
       List answers = box.answerList();
       List<Widget> circles = [];
-      for (int i = 0; i < answers.length && i < 5; i++) {
-        String answer=Tools.seosul(answers[i]);
+      for (int i = 0; i < answers.length ; i++) {
+        String answer = Tools.seosul(answers[i]);
         Widget circle = Container(
           width: 40,
           height: 40,
@@ -218,22 +218,27 @@ class _ViewPageState extends State<ViewPage> {
 
         circles.add(circle);
       }
-      return Row(children: circles);
+      return Container(
+          height: 40,
+          child: ListView(scrollDirection: Axis.horizontal,
+              children: circles));
     }
 
     Widget bottom() {
       String timetext = box.editedTime;
       String diff = Time.timeDifferent(timetext);
 
-      return Row(
-        children: [
-          Spacer(),
-          Text(
-            '$diff',
-            style: TextStyle(fontSize: 16),
-          ),
-          SizedBox(width: 20,)
-        ],
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(0, 8, 20, 0),
+        child: Row(
+          children: [
+            Spacer(),
+            Text(
+              '최종 수정일: $diff',
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
       );
     }
 
@@ -243,14 +248,13 @@ class _ViewPageState extends State<ViewPage> {
       },
       child: Card(
         margin: const EdgeInsets.fromLTRB(8, 12, 8, 0),
-        shape: RoundedRectangleBorder(   //모서리를 둥글게 하기 위해 사용
+        shape: RoundedRectangleBorder(
+          //모서리를 둥글게 하기 위해 사용
           borderRadius: BorderRadius.circular(16.0),
         ),
         color: Colors.lightBlueAccent,
         child: Container(
-
           padding: const EdgeInsets.fromLTRB(18, 8, 8, 8),
-
           child: Column(
             children: [
               titleRow(context),
@@ -263,10 +267,10 @@ class _ViewPageState extends State<ViewPage> {
     );
   }
 
-  void _navigateEditPage(BuildContext context, userInfo user) async {
+  void _navigateEditPage(BuildContext context, userInfo user,String title) async {
     await Navigator.push(
       context,
-      CupertinoPageRoute(builder: (context) => EditPage(userinfo: user)),
+      CupertinoPageRoute(builder: (context) => EditPage(title: title, userinfo: user)),
     );
     print('back');
     init();
@@ -325,7 +329,7 @@ class _ViewPageState extends State<ViewPage> {
 
   void _onTapEditButton(BuildContext context, userInfo box) {
     print("수정하기");
-    _navigateEditPage(context, box);
+    _navigateEditPage(context, box, '수정하기');
   }
 
   void _onTapBox(userInfo box, BuildContext context) {

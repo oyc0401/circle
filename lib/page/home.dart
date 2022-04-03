@@ -60,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomAppBar(child: navigationRow()),
       body: Column(
         children: [
+          // CupertinoButton(child: Text('시험'), onPressed: (){speaking.practiceStart();}),
           Expanded(
               child: ListView(
             children: [
@@ -83,101 +84,126 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget touchSection(List answers) {
     print('touchSection');
 
-
+    // 가로로 긴 위젯
     List<Widget> singleWidgets(List Answers) {
       List<Widget> widgets = [];
 
       for (int i = 0; i < Answers.length; i++) {
-        String text =  Tools.seosul(answers[i].toString()) ;
         int number = i + 1;
-
-        Color thiscolor = Colors.white;
-        if (speaking.getPosition() == number) {
-          thiscolor = Colors.redAccent;
-        }
-
-        Widget circle = Container(
-          //color: Colors.black,
-          padding: EdgeInsets.fromLTRB(0, 15, 0, 10),
-          child: Column(
-            children: [
-              InkWell(
-                onTap: () {
-                  getDATA();
-                  speaking.speak(number, setstate);
-                },
-                onLongPress: () {
-                  print(answers[i].toString());
-                },
-                child: Container(
-                  width: 65,
-                  height: 65,
-                  margin: EdgeInsets.fromLTRB(0, 0, 0, 6),
-                  decoration: BoxDecoration(
-                    color: thiscolor,
-                    shape: BoxShape.circle,
-                    border: Border.all(),
-                  ),
-                  child: Center(
-                    child: Text(text,
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.w500)),
-                  ),
-                ),
-              ),
-              Text('$number번',
-                  style: const TextStyle(color: Colors.black, fontSize: 15.0)),
-            ],
-          ),
-        );
-
-        widgets.add(circle);
+        String answer = answers[i];
+        widgets.add(SingleCircle(number, answer));
       }
-
       return widgets;
     }
 
+    // 가로로 긴거 모은 리스트
     List<Widget> rows(List<Widget> values) {
       List<Widget> list = [];
 
+      //리스트 길이를 5의 배수로 맞추기
       while (values.length % 5 != 0) {
-        values.add(Container(
+        values.add(const SizedBox(
           height: 80,
           width: 65,
-          // color: Colors.black,
         ));
       }
 
-      int rowNum = values.length ~/ 5;
+      final int rowNum = values.length ~/ 5;
       for (int i = 0; i < rowNum; i++) {
-        Widget column = Column(
-          children: [
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                // 같은 간격만큼 공간을 둠
-                children: values.sublist(0, 5)),
-            Container(
-              height: 0.5,
-              color: Colors.black,
-            )
-          ],
-        );
-
-        list.add(column);
+        list.add(MultiCircle(values.sublist(0, 5)));
         values.removeRange(0, 5);
       }
 
       return list;
     }
 
-    Widget context = Container(
-        //color: Colors.green,
+    return Container(
         padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
         child: Column(children: rows(singleWidgets(answers))));
+  }
 
-    return context;
+  Widget MultiCircle(List<Widget> values) {
+    return Column(
+      children: [
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // 같은 간격만큼 공간을 둠
+            children: values),
+        Container(
+          height: 0.5,
+          color: Colors.black,
+        )
+      ],
+    );
+  }
+
+  Widget SingleCircle(int number, String answer) {
+    String text = Tools.seosul(answer);
+
+    Color thiscolor = Colors.white;
+    if (speaking.getPosition() == number) {
+      thiscolor = Colors.redAccent;
+    }
+
+    return Container(
+      //color: Colors.black,
+      padding: EdgeInsets.fromLTRB(0, 15, 0, 10),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () {
+              getDATA();
+              speaking.speak(number, setstate);
+            },
+            onLongPress: () {
+              _onLongTapButton(answer);
+            },
+            child: Container(
+              width: 65,
+              height: 65,
+              margin: EdgeInsets.fromLTRB(0, 0, 0, 6),
+              decoration: BoxDecoration(
+                color: thiscolor,
+                shape: BoxShape.circle,
+                border: Border.all(),
+              ),
+              child: Center(
+                child: Text(text,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.w500)),
+              ),
+            ),
+          ),
+          Text('$number번',
+              style: const TextStyle(color: Colors.black, fontSize: 15.0)),
+        ],
+      ),
+    );
+  }
+
+  void _onLongTapButton(String text) {
+    showDialog(
+        context: context,
+        //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            content: Text(
+              text,
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text("확인"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
   }
 
   Row navigationRow() {

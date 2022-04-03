@@ -8,7 +8,8 @@ import '../DB/sqlLite.dart';
 
 
 class EditPage extends StatefulWidget {
-  const EditPage({Key? key, required this.userinfo}) : super(key: key);
+  const EditPage({Key? key, required this.title, required this.userinfo}) : super(key: key);
+  final String title;
   final userInfo userinfo;
 
   @override
@@ -65,7 +66,7 @@ class _EditPageState extends State<EditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('추가하기'),
+        title: Text(widget.title),
         actions: [
           IconButton(
             onPressed: () {
@@ -85,37 +86,40 @@ class _EditPageState extends State<EditPage> {
 
   Widget inputSection() {
     List<Widget> list = [];
+
     for (int i = 1; i <= numline; i++) {
       list.add(inputWidget(i));
     }
 
-
-    Widget widget = Column(
-      children: [
-        TextFormField(
-          initialValue: userinfo.title,
-          textInputAction: TextInputAction.next,
-          decoration: const InputDecoration(
-            labelText: 'title',
+    return Container(
+      padding: EdgeInsets.all(12),
+      child: Column(
+        children: [
+          TextFormField(
+            initialValue: userinfo.title,
+            textInputAction: TextInputAction.next,
+            decoration: const InputDecoration(
+              hintText:  '제목',
+            ),
+            onChanged: (value) {
+              userinfo.title = value;
+            },
           ),
-          onChanged: (value) {
-            userinfo.title = value;
-          },
-        ),
-        TextFormField(
-          initialValue: userinfo.grade,
-          textInputAction: TextInputAction.next,
-          decoration: const InputDecoration(
-            labelText: 'grade',
+          TextFormField(
+            initialValue: userinfo.grade,
+            textInputAction: TextInputAction.next,
+            decoration: const InputDecoration(
+              hintText: '학년',
+            ),
+            onChanged: (value) {
+              userinfo.grade = value;
+            },
           ),
-          onChanged: (value) {
-            userinfo.grade = value;
-          },
-        ),
-        ...list
-      ],
+          SizedBox(height: 12,),
+          ...list
+        ],
+      ),
     );
-    return widget;
   }
 
   Widget inputWidget(int num) {
@@ -126,24 +130,23 @@ class _EditPageState extends State<EditPage> {
       color = Colors.black12;
     }
 
-    Widget widget = Padding(
-        padding: EdgeInsets.all(8),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-          decoration: BoxDecoration(
-              color: color,
-              border: Border.all(
-                color: Colors.black,
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(300))),
-          child: Row(
-            children: [
-              Text(
-                '$num번: ',
-                style: TextStyle(fontSize: 18),
-              ),
-              Expanded(
-                  child: TextFormField(
+    return Container(
+      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
+      decoration: BoxDecoration(
+          color: color,
+          border: Border.all(
+            color: Colors.black,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(300))),
+      child: Row(
+        children: [
+          Text(
+            '$num번: ',
+            style: TextStyle(fontSize: 18),
+          ),
+          Expanded(
+              child: TextFormField(
                 initialValue: answers[num - 1],
                 style: TextStyle(fontSize: 16),
                 textInputAction: TextInputAction.next,
@@ -159,10 +162,8 @@ class _EditPageState extends State<EditPage> {
                   }
                 },
               ))
-            ],
-          ),
-        ));
-
-    return widget;
+        ],
+      ),
+    );
   }
 }

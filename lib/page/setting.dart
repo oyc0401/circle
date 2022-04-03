@@ -3,8 +3,12 @@ import 'dart:math';
 import 'package:circle/tools/Speaking.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 import '../DB/shared.dart';
+
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class SettingPage extends StatefulWidget {
   SettingPage({
