@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:circle/DB/sqlLite.dart';
 import 'package:circle/page/home.dart';
+import 'package:circle/tools/Time.dart';
+import 'package:circle/tools/Tools.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +76,7 @@ class _ViewPageState extends State<ViewPage> {
           userInfo us = userInfo(
               id: StringHandle.String2Sha256(DateTime.now().toString()),
               title: '',
-              answers: StringHandle.ListToString(['','','','']),
+              answers: StringHandle.ListToString(['', '', '', '']),
               grade: '',
               editedTime: DateTime.now().toString(),
               createTime: DateTime.now().toString(),
@@ -106,16 +108,15 @@ class _ViewPageState extends State<ViewPage> {
             ),
           ),
           items: items
-              .map((item) =>
-              DropdownMenuItem<String>(
-                value: item,
-                child: Text(
-                  item,
-                  style: const TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-              ))
+              .map((item) => DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(
+                      item,
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ))
               .toList(),
           value: selectedValue,
           onChanged: (value) {
@@ -148,10 +149,55 @@ class _ViewPageState extends State<ViewPage> {
   Widget unit(BuildContext context, userInfo box) {
     print(box.toMap());
 
+    Widget titleRow(BuildContext context) {
+      return Row(
+        children: [
+          Text(
+            box.title,
+            style: TextStyle(fontSize: 30),
+          ),
+          const SizedBox(
+            width: 15,
+          ),
+          Container(
+              height: 30,
+              alignment: Alignment.bottomCenter,
+              //color: Colors.green,
+              child: Text(
+                "학년: " + box.grade,
+                style: TextStyle(fontSize: 15),
+              )),
+          Spacer(),
+          PopupMenuButton(
+              icon: Icon(Icons.more_vert),
+              itemBuilder: (context) {
+                return [
+                  const PopupMenuItem<int>(
+                    value: 0,
+                    child: Text("수정"),
+                  ),
+                  const PopupMenuItem<int>(
+                    value: 1,
+                    child: Text("삭제"),
+                  ),
+                ];
+              },
+              onSelected: (value) {
+                if (value == 0) {
+                  _onTapEditButton(context, box);
+                } else if (value == 1) {
+                  _onTapDeleteButton(box, context);
+                }
+              }),
+        ],
+      );
+    }
+
     Widget circleRow() {
       List answers = box.answerList();
       List<Widget> circles = [];
       for (int i = 0; i < answers.length && i < 5; i++) {
+        String answer=Tools.seosul(answers[i]);
         Widget circle = Container(
           width: 40,
           height: 40,
@@ -162,7 +208,7 @@ class _ViewPageState extends State<ViewPage> {
             border: Border.all(),
           ),
           child: Center(
-            child: Text(answers[i],
+            child: Text(answer,
                 style: const TextStyle(
                     color: Colors.black,
                     fontSize: 25.0,
@@ -175,83 +221,43 @@ class _ViewPageState extends State<ViewPage> {
       return Row(children: circles);
     }
 
+    Widget bottom() {
+      String timetext = box.editedTime;
+      String diff = Time.timeDifferent(timetext);
+
+      return Row(
+        children: [
+          Spacer(),
+          Text(
+            '$diff',
+            style: TextStyle(fontSize: 16),
+          ),
+          SizedBox(width: 20,)
+        ],
+      );
+    }
+
     return InkWell(
       onTap: () {
         _onTapBox(box, context);
       },
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        padding: const EdgeInsets.fromLTRB(18, 8, 8, 8),
-        color: Colors.amberAccent,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  box.title,
-                  style: TextStyle(fontSize: 30),
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                Container(
-                    height: 30,
-                    alignment: Alignment.bottomCenter,
-                    //color: Colors.green,
-                    child: Text(
-                      "학년: " + box.grade,
-                      style: TextStyle(fontSize: 15),
-                    )),
-                Spacer(),
-                PopupMenuButton(
-                    icon: Icon(Icons.more_vert),
-                    itemBuilder: (context) {
-                      return [
-                        const PopupMenuItem<int>(
-                          value: 0,
-                          child: Text("수정"),
-                        ),
-                        const PopupMenuItem<int>(
-                          value: 1,
-                          child: Text("삭제"),
-                        ),
-                      ];
-                    },
-                    onSelected: (value) {
-                      if (value == 0) {
-                        _onTapEditButton(context, box);
-                      } else if (value == 1) {
-                        _onTapDeleteButton(box, context);
-                      }
-                    }),
-              ],
-            ),
-            circleRow(),
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '수정 시간: ' + box.editedTime,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Text(
-                      '생성 시간: ' + box.createTime,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Text(
-                      '최근 본 시간: ' + box.viewTime,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(
-                      height: 3,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+      child: Card(
+        margin: const EdgeInsets.fromLTRB(8, 12, 8, 0),
+        shape: RoundedRectangleBorder(   //모서리를 둥글게 하기 위해 사용
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        color: Colors.lightBlueAccent,
+        child: Container(
+
+          padding: const EdgeInsets.fromLTRB(18, 8, 8, 8),
+
+          child: Column(
+            children: [
+              titleRow(context),
+              circleRow(),
+              bottom(),
+            ],
+          ),
         ),
       ),
     );
@@ -269,8 +275,7 @@ class _ViewPageState extends State<ViewPage> {
   void _navigateHomePage(BuildContext context, userInfo user) async {
     await Navigator.push(
       context,
-      CupertinoPageRoute(
-          builder: (context) => MyHomePage(userinfo: user)),
+      CupertinoPageRoute(builder: (context) => MyHomePage(userinfo: user)),
     );
     print('back');
     init();

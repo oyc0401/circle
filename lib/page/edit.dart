@@ -33,7 +33,6 @@ class _EditPageState extends State<EditPage> {
     numline = answers.length;
   }
 
-  // 겹침
   save(userInfo user, BuildContext context) async {
     lastRemove(List list) {
       for (int i = 1; i <= list.length; i++) {
@@ -78,8 +77,6 @@ class _EditPageState extends State<EditPage> {
       ),
       body: ListView(
         children: [
-          CupertinoButton(
-              child: Text('줄 추가하기 (현재 $numline 줄)'), onPressed: addLine),
           inputSection(),
         ],
       ),

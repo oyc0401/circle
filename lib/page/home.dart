@@ -1,6 +1,7 @@
 import 'package:circle/DB/shared.dart';
 import 'package:circle/DB/sqlLite.dart';
 import 'package:circle/tools/Speaking.dart';
+import 'package:circle/tools/Tools.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -82,14 +83,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget touchSection(List answers) {
     print('touchSection');
 
+
     List<Widget> singleWidgets(List Answers) {
       List<Widget> widgets = [];
 
       for (int i = 0; i < Answers.length; i++) {
-        String text = answers[i].toString();
-        if (text.length > 1) {
-          text = '서';
-        }
+        String text =  Tools.seosul(answers[i].toString()) ;
         int number = i + 1;
 
         Color thiscolor = Colors.white;
