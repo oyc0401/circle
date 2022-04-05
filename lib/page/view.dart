@@ -69,24 +69,31 @@ class _ViewPageState extends State<ViewPage> {
         title: Text(widget.title),
       ),
       body: ListView(
-        children: [orderBySection(context), listSection(context)],
+        children: [orderBySection(context),
+
+
+          listSection(context)],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          userInfo us = userInfo(
-              id: StringHandle.String2Sha256(DateTime.now().toString()),
-              title: '',
-              answers: StringHandle.ListToString(['', '', '', '']),
-              grade: '',
-              editedTime: DateTime.now().toString(),
-              createTime: DateTime.now().toString(),
-              viewTime: DateTime.now().toString());
-          //_navigateWritePage(context);
-          _navigateEditPage(context, us, '추가하기');
-        },
-        tooltip: '추가하기',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: FloatingAddButton(context),
+    );
+  }
+
+  FloatingActionButton FloatingAddButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        userInfo us = userInfo(
+            id: StringHandle.String2Sha256(DateTime.now().toString()),
+            title: '',
+            answers: StringHandle.ListToString(['', '', '', '']),
+            grade: '',
+            editedTime: DateTime.now().toString(),
+            createTime: DateTime.now().toString(),
+            viewTime: DateTime.now().toString());
+        //_navigateWritePage(context);
+        _navigateEditPage(context, us, '추가하기');
+      },
+      tooltip: '추가하기',
+      child: const Icon(Icons.add),
     );
   }
 
@@ -136,10 +143,14 @@ class _ViewPageState extends State<ViewPage> {
 
   Widget listSection(BuildContext context) {
     final List<Widget> widgetList = [];
-
-    user_infomations.forEach((element) {
-      widgetList.add(unit(context, element));
-    });
+    if (user_infomations.length != 0) {
+      user_infomations.forEach((element) {
+        widgetList.add(unit(context, element));
+      });
+    } else {
+      print('dsdadsadadda' + user_infomations.length.toString());
+      widgetList.add(Container());
+    }
 
     return Column(
       children: widgetList,
@@ -196,7 +207,7 @@ class _ViewPageState extends State<ViewPage> {
     Widget circleRow() {
       List answers = box.answerList();
       List<Widget> circles = [];
-      for (int i = 0; i < answers.length ; i++) {
+      for (int i = 0; i < answers.length; i++) {
         String answer = Tools.seosul(answers[i]);
         Widget circle = Container(
           width: 40,
@@ -220,8 +231,7 @@ class _ViewPageState extends State<ViewPage> {
       }
       return Container(
           height: 40,
-          child: ListView(scrollDirection: Axis.horizontal,
-              children: circles));
+          child: ListView(scrollDirection: Axis.horizontal, children: circles));
     }
 
     Widget bottom() {
@@ -267,10 +277,12 @@ class _ViewPageState extends State<ViewPage> {
     );
   }
 
-  void _navigateEditPage(BuildContext context, userInfo user,String title) async {
+  void _navigateEditPage(
+      BuildContext context, userInfo user, String title) async {
     await Navigator.push(
       context,
-      CupertinoPageRoute(builder: (context) => EditPage(title: title, userinfo: user)),
+      CupertinoPageRoute(
+          builder: (context) => EditPage(title: title, userinfo: user)),
     );
     print('back');
     init();

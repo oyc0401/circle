@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
+import '../DB/HardText.dart';
 import '../DB/shared.dart';
 
 import 'dart:io' show Platform;
@@ -23,8 +24,8 @@ class _SettingPageState extends State<SettingPage> {
   double volume = 1;
   double pitch = 1;
   double rate = 0.5;
-  int answerDuration=500;
-  int numDuration=300;
+  int answerDuration = 500;
+  int numDuration = 300;
 
   _save() async {
     KeyValue keyValue = await KeyValue.Instance();
@@ -48,8 +49,8 @@ class _SettingPageState extends State<SettingPage> {
     volume = keyValue.getVolume();
     pitch = keyValue.getPitch();
     rate = keyValue.getSpeechRate();
-    numDuration=keyValue.getNumberDuration();
-    answerDuration=keyValue.getAnswerDuration();
+    numDuration = keyValue.getNumberDuration();
+    answerDuration = keyValue.getAnswerDuration();
     setState(() {});
   }
 
@@ -62,18 +63,18 @@ class _SettingPageState extends State<SettingPage> {
       body: Column(
         children: [
           editSection(),
-          CupertinoButton(child: Text('저장'), onPressed: _save),
           CupertinoButton(
               child: Text('초기화'),
               onPressed: () {
-                volume = 1;
-                pitch = 1;
-                rate = 0.5;
-                numDuration=300;
-                answerDuration=500;
+                volume = HardText.volume;
+                pitch = HardText.pitch;
+                rate = HardText.speechRate;
+                numDuration = HardText.numberDuration;
+                answerDuration = HardText.answerDuration;
 
                 setState(() {});
-              })
+              }),
+          CupertinoButton(child: Text('저장'), onPressed: _save),
         ],
       ),
     );
@@ -86,7 +87,24 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget _buildSliders() {
     return Column(
-      children: [_volume(), _pitch(), _rate(),_numDuration(),_ansDuration()],
+      children: [
+        SizedBox(
+          height: 18,
+        ),
+        Text(
+          '볼륨',
+          style: TextStyle(fontSize: 15),
+        ),
+        _volume(),
+        Text('높낮이', style: TextStyle(fontSize: 15)),
+        _pitch(),
+        Text('속도', style: TextStyle(fontSize: 15)),
+        _rate(),
+        Text('숫자 간격', style: TextStyle(fontSize: 15)),
+        _numDuration(),
+        Text('정답 간격', style: TextStyle(fontSize: 15)),
+        _ansDuration()
+      ],
     );
   }
 
@@ -129,6 +147,7 @@ class _SettingPageState extends State<SettingPage> {
       activeColor: Colors.green,
     );
   }
+
   Widget _numDuration() {
     return Slider(
       value: numDuration.toDouble(),
@@ -142,6 +161,7 @@ class _SettingPageState extends State<SettingPage> {
       activeColor: Colors.yellow,
     );
   }
+
   Widget _ansDuration() {
     return Slider(
       value: answerDuration.toDouble(),
