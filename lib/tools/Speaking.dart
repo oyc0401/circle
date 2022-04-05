@@ -1,22 +1,23 @@
 import 'package:flutter_tts/flutter_tts.dart';
 
+import '../DB/HardText.dart';
 import 'KoreanNumber.dart';
 
 class Speaking {
   Speaking() {
-    _flutterTts.setSpeechRate(0.5);
-    _flutterTts.setVolume(0.5);
-    _flutterTts.setPitch(1);
+    _flutterTts.setSpeechRate(HardText.speechRate);
+    _flutterTts.setVolume(HardText.volume);
+    _flutterTts.setPitch(HardText.pitch);
     //_flutterTts.setVoice({'name': 'ko-kr-x-kod-network', 'locale': 'ko-KR'});
-    _flutterTts.setVoice({'name': '', 'locale': 'ko-KR'});
+    _flutterTts.setVoice(HardText.voice);
   }
 
   final FlutterTts _flutterTts = FlutterTts();
   List _answers = [];
   int _position = 0;
   bool _isSpeak = false;
-  int numberDuration = 300;
-  int answerDuration = 500;
+  int numberDuration = HardText.numberDuration;
+  int answerDuration = HardText.answerDuration;
 
   getAnswers() => _answers;
 

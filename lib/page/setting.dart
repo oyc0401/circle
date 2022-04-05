@@ -21,7 +21,7 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
   double volume = 1;
-  double pitch = 0.9;
+  double pitch = 1;
   double rate = 0.5;
   int answerDuration=500;
   int numDuration=300;
@@ -61,14 +61,13 @@ class _SettingPageState extends State<SettingPage> {
       ),
       body: Column(
         children: [
-          Text('setting'),
           editSection(),
           CupertinoButton(child: Text('저장'), onPressed: _save),
           CupertinoButton(
               child: Text('초기화'),
               onPressed: () {
                 volume = 1;
-                pitch = 0.9;
+                pitch = 1;
                 rate = 0.5;
                 numDuration=300;
                 answerDuration=500;
