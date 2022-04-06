@@ -1,4 +1,3 @@
-
 import 'package:circle/tools/SrtingHandle.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -6,9 +5,9 @@ import 'package:flutter/material.dart';
 
 import '../DB/sqlLite.dart';
 
-
 class EditPage extends StatefulWidget {
-  const EditPage({Key? key, required this.title, required this.userinfo}) : super(key: key);
+  const EditPage({Key? key, required this.title, required this.userinfo})
+      : super(key: key);
   final String title;
   final userInfo userinfo;
 
@@ -45,7 +44,8 @@ class _EditPageState extends State<EditPage> {
       }
       return list;
     }
-    user.editedTime=DateTime.now().toString();
+
+    user.editedTime = DateTime.now().toString();
     print(answers);
     List list = lastRemove(answers);
     userinfo.answers = StringHandle.ListToString(list);
@@ -55,6 +55,7 @@ class _EditPageState extends State<EditPage> {
 
     Navigator.of(context).pop(true);
   }
+
   addLine() {
     setState(() {
       numline = numline + 1;
@@ -67,13 +68,23 @@ class _EditPageState extends State<EditPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
         actions: [
-          IconButton(
-            onPressed: () {
-              save(userinfo, context);
-            },
-            icon: const Icon(Icons.save),
-          ),
+          TextButton(
+              onPressed: () {
+                save(userinfo, context);
+              },
+              child: Text(
+                '저장',
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              )),
+          // IconButton(
+          //   onPressed: () {
+          //     save(userinfo, context);
+          //   },
+          //   icon: const Icon(Icons.save),
+          // ),
         ],
       ),
       body: ListView(
@@ -99,7 +110,7 @@ class _EditPageState extends State<EditPage> {
             initialValue: userinfo.title,
             textInputAction: TextInputAction.next,
             decoration: const InputDecoration(
-              hintText:  '제목',
+              hintText: '제목',
             ),
             onChanged: (value) {
               userinfo.title = value;
@@ -115,7 +126,9 @@ class _EditPageState extends State<EditPage> {
               userinfo.grade = value;
             },
           ),
-          SizedBox(height: 12,),
+          SizedBox(
+            height: 12,
+          ),
           ...list
         ],
       ),
@@ -147,21 +160,21 @@ class _EditPageState extends State<EditPage> {
           ),
           Expanded(
               child: TextFormField(
-                initialValue: answers[num - 1],
-                style: TextStyle(fontSize: 16),
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                ),
-                onChanged: (value) {
-                  answers[num - 1] = value;
-                  print(answers);
-                  if (numline == num) {
-                    print('줄추가해해해해');
-                    addLine();
-                  }
-                },
-              ))
+            initialValue: answers[num - 1],
+            style: TextStyle(fontSize: 16),
+            textInputAction: TextInputAction.next,
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+            ),
+            onChanged: (value) {
+              answers[num - 1] = value;
+              print(answers);
+              if (numline == num) {
+                print('줄추가해해해해');
+                addLine();
+              }
+            },
+          ))
         ],
       ),
     );

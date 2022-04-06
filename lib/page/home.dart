@@ -46,6 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('circle'),
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
         actions: [
           IconButton(
             onPressed: () {

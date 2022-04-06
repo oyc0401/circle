@@ -67,6 +67,9 @@ class _ViewPageState extends State<ViewPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
+
       ),
       body: ListView(
         children: [orderBySection(context),
@@ -94,6 +97,7 @@ class _ViewPageState extends State<ViewPage> {
       },
       tooltip: '추가하기',
       child: const Icon(Icons.add),
+      backgroundColor: Colors.redAccent,
     );
   }
 
@@ -259,10 +263,12 @@ class _ViewPageState extends State<ViewPage> {
       child: Card(
         margin: const EdgeInsets.fromLTRB(8, 12, 8, 0),
         shape: RoundedRectangleBorder(
+          //side: BorderSide(width: 0),
           //모서리를 둥글게 하기 위해 사용
           borderRadius: BorderRadius.circular(16.0),
         ),
-        color: Colors.lightBlueAccent,
+
+        color: Color(0xffffe4e1),
         child: Container(
           padding: const EdgeInsets.fromLTRB(18, 8, 8, 8),
           child: Column(

@@ -59,6 +59,8 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('setting'),
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
       ),
       body: Column(
         children: [
