@@ -16,16 +16,23 @@ class StringHandle{
   static ListToString(List list) {
     String string = '';
     list.forEach((element) {
-      string = '$string,$element';
+      string = '$string-#@#-$element';
     });
     print(string);
     return string;
   }
 
   static StringToList(String string) {
-    List list = string.split(',');
+    List list = string.split('-#@#-');
     list.removeAt(0);
     return list;
   }
 
+}
+
+void main(){
+  List list=['1','4','5'];
+  String st=StringHandle.ListToString(list);
+  print(st);
+  print(StringHandle.StringToList(st));
 }

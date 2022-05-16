@@ -26,7 +26,7 @@ class ViewPage extends StatefulWidget {
 class _ViewPageState extends State<ViewPage> {
   List<userInfo> user_infomations = [];
   SQLite sqLite = SQLite();
-  String? selectedValue;
+  String? selectedSort;
 
   @override
   void initState() {
@@ -87,7 +87,7 @@ class _ViewPageState extends State<ViewPage> {
         userInfo us = userInfo(
             id: StringHandle.String2Sha256(DateTime.now().toString()),
             title: '',
-            answers: StringHandle.ListToString(['', '', '', '']),
+            answers: StringHandle.ListToString(['', '', '']),
             grade: '',
             editedTime: DateTime.now().toString(),
             createTime: DateTime.now().toString(),
@@ -129,10 +129,10 @@ class _ViewPageState extends State<ViewPage> {
                     ),
                   ))
               .toList(),
-          value: selectedValue,
+          value: selectedSort,
           onChanged: (value) {
             setState(() {
-              selectedValue = value.toString();
+              selectedSort = value.toString();
 
               setorderby(value.toString());
             });

@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Color thiscolor = Colors.white;
     if (speaking.getPosition() == number) {
-      thiscolor = Colors.redAccent;
+      thiscolor = Color(0xffffe4e1);
     }
 
     return Container(

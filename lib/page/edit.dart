@@ -18,7 +18,6 @@ class EditPage extends StatefulWidget {
 class _EditPageState extends State<EditPage> {
   late userInfo userinfo = widget.userinfo;
   List answers = ['', '', '', '', '', '', ''];
-  int numline = 5;
 
   @override
   void initState() {
@@ -27,10 +26,10 @@ class _EditPageState extends State<EditPage> {
     init();
   }
 
-  init() async {
+  init() {
     answers = userinfo.answerList();
     addLine();
-    numline = answers.length;
+    addLine();
   }
 
   save(userInfo user, BuildContext context) async {
@@ -49,6 +48,7 @@ class _EditPageState extends State<EditPage> {
     print(answers);
     List list = lastRemove(answers);
     userinfo.answers = StringHandle.ListToString(list);
+    print(StringHandle.ListToString(list));
 
     SQLite sqLite = SQLite();
     await sqLite.insertTime(user);
@@ -57,10 +57,8 @@ class _EditPageState extends State<EditPage> {
   }
 
   addLine() {
-    setState(() {
-      numline = numline + 1;
-      answers.add('');
-    });
+    answers.add('');
+    setState(() {});
   }
 
   @override
@@ -77,61 +75,68 @@ class _EditPageState extends State<EditPage> {
               },
               child: Text(
                 '저장',
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                style: TextStyle(fontSize: 18, color: Colors.black),
               )),
-          // IconButton(
-          //   onPressed: () {
-          //     save(userinfo, context);
-          //   },
-          //   icon: const Icon(Icons.save),
-          // ),
         ],
       ),
       body: ListView(
         children: [
-          inputSection(),
+          Container(
+            padding: EdgeInsets.all(12),
+            child: Column(
+              children: [
+                titleSection(),
+                gradeSection(),
+                inputSection(),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
+  titleSection() {
+    return TextFormField(
+      initialValue: userinfo.title,
+      textInputAction: TextInputAction.next,
+      decoration: const InputDecoration(
+        hintText: '제목',
+      ),
+      onChanged: (value) {
+        userinfo.title = value;
+      },
+    );
+  }
+
+  gradeSection() {
+    return TextFormField(
+      initialValue: userinfo.grade,
+      textInputAction: TextInputAction.next,
+      decoration: const InputDecoration(
+        hintText: '학년',
+      ),
+      onChanged: (value) {
+        userinfo.grade = value;
+      },
+    );
+  }
+
   Widget inputSection() {
     List<Widget> list = [];
+    //print("인풋: $numline, "+answers.length.toString());
 
-    for (int i = 1; i <= numline; i++) {
+    for (int i = 1; i <= answers.length; i++) {
       list.add(inputWidget(i));
     }
 
-    return Container(
-      padding: EdgeInsets.all(12),
-      child: Column(
-        children: [
-          TextFormField(
-            initialValue: userinfo.title,
-            textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(
-              hintText: '제목',
-            ),
-            onChanged: (value) {
-              userinfo.title = value;
-            },
-          ),
-          TextFormField(
-            initialValue: userinfo.grade,
-            textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(
-              hintText: '학년',
-            ),
-            onChanged: (value) {
-              userinfo.grade = value;
-            },
-          ),
-          SizedBox(
-            height: 12,
-          ),
-          ...list
-        ],
-      ),
+    return Column(
+      children: [
+        SizedBox(
+          height: 12,
+        ),
+        ...list
+      ],
     );
   }
 
@@ -159,22 +164,24 @@ class _EditPageState extends State<EditPage> {
             style: TextStyle(fontSize: 18),
           ),
           Expanded(
-              child: TextFormField(
-            initialValue: answers[num - 1],
-            style: TextStyle(fontSize: 16),
-            textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
+            child: TextFormField(
+              initialValue: answers[num - 1],
+              style: TextStyle(fontSize: 16),
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+              ),
+              onChanged: (value) {
+                answers[num - 1] = value;
+                print(answers);
+                print(answers.length.toString() + ", $num");
+                if (answers.length <= num + 1) {
+                  print('줄 추가!');
+                  addLine();
+                }
+              },
             ),
-            onChanged: (value) {
-              answers[num - 1] = value;
-              print(answers);
-              if (numline == num) {
-                print('줄추가해해해해');
-                addLine();
-              }
-            },
-          ))
+          )
         ],
       ),
     );

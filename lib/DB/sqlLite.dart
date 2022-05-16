@@ -1,3 +1,4 @@
+import 'package:circle/tools/SrtingHandle.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -85,8 +86,7 @@ class userInfo {
       required this.viewTime});
 
   List answerList() {
-    List list = answers.split(',');
-    list.removeAt(0);
+    List list = StringHandle.StringToList(answers);
     return list;
   }
 
