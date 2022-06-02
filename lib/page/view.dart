@@ -256,27 +256,29 @@ class _ViewPageState extends State<ViewPage> {
       );
     }
 
-    return InkWell(
-      onTap: () {
-        _onTapBox(box, context);
-      },
-      child: Card(
-        margin: const EdgeInsets.fromLTRB(8, 12, 8, 0),
-        shape: RoundedRectangleBorder(
-          //side: BorderSide(width: 0),
-          //모서리를 둥글게 하기 위해 사용
-          borderRadius: BorderRadius.circular(16.0),
-        ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 12, 8, 0),
+      child: InkWell(
+        onTap: () {
+          _onTapBox(box, context);
+        },
+        child: Card(
+          shape: RoundedRectangleBorder(
+            //side: BorderSide(width: 0),
+            //모서리를 둥글게 하기 위해 사용
+            borderRadius: BorderRadius.circular(16.0),
+          ),
 
-        color: Color(0xffffe4e1),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(18, 8, 8, 8),
-          child: Column(
-            children: [
-              titleRow(context),
-              circleRow(),
-              bottom(),
-            ],
+          color: Color(0xffffe4e1),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(18, 8, 8, 8),
+            child: Column(
+              children: [
+                titleRow(context),
+                circleRow(),
+                bottom(),
+              ],
+            ),
           ),
         ),
       ),
